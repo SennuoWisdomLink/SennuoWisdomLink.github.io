@@ -3,919 +3,843 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>森诺智联 - 智能机器人技术引领者</title>
+    <title>森诺智联 - 智能机器人解决方案提供商</title>
+    <!-- 外部资源 -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <!-- Tailwind 配置 -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0B3C5D', // 深蓝主色
-                        secondary: '#328CC1', // 科技蓝辅助色
-                        accent: '#D9B310', // 亮黄强调色
-                        dark: '#121A29', // 深色背景
-                        light: '#F8F9FA', // 浅色文本
+                        // 科技感主色调
+                        primary: '#0EA5E9', // 亮蓝色
+                        secondary: '#1E293B', // 深灰蓝
+                        dark: '#0F172A', // 近黑色
+                        accent: '#22D3EE', // 青色点缀
+                        light: '#F8FAFC' // 浅灰色文本
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
                     },
-                }
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-up': 'fadeUp 0.8s ease forwards',
+                        'fade-in': 'fadeIn 1s ease forwards'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                },
             }
         }
     </script>
+    
+    <!-- 自定义工具类 -->
     <style type="text/tailwindcss">
         @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
             .text-shadow {
-                text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
-            .bg-gradient-tech {
-                background: linear-gradient(135deg, #0B3C5D 0%, #121A29 100%);
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0,0,0,0.2);
             }
-            .card-hover {
-                transition: all 0.3s ease;
-            }
-            .card-hover:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 20px 25px -5px rgba(11, 60, 93, 0.4), 0 10px 10px -5px rgba(11, 60, 93, 0.2);
-            }
-            .nav-scrolled {
-                background-color: rgba(18, 26, 41, 0.95);
+            .bg-glass {
+                background: rgba(30, 41, 59, 0.7);
                 backdrop-filter: blur(8px);
+            }
+            .gradient-overlay {
+                background: linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,1) 100%);
+            }
+            .nav-active {
+                color: theme('colors.primary');
+                font-weight: 600;
+                position: relative;
+            }
+            .nav-active::after {
+                content: '';
+                position: absolute;
+                bottom: -4px;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                background-color: theme('colors.primary');
+                border-radius: 1px;
             }
         }
     </style>
+    
+    <!-- 基础样式 -->
+    <style>
+        /* 导入字体 */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            scroll-behavior: smooth !important; /* 强制全局平滑滚动，确保所有跳转都有效果 */
+        }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0EA5E9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284C7;
+        }
+        
+        /* 元素初始状态（用于动画） */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 解决固定导航栏遮挡问题 - 所有模块统一设置 */
+        section {
+            scroll-margin-top: 90px; /* 适配导航栏高度，确保跳转后模块顶部不被遮挡 */
+        }
+
+        /* 联系我们按钮特殊样式（不继承导航高亮） */
+        .nav-link.no-highlight {
+            position: relative !important;
+        }
+        .nav-link.no-highlight::after {
+            display: none !important; /* 隐藏下划线 */
+        }
+        .nav-link.no-highlight.nav-active {
+            color: white !important; /* 保持按钮原有白色文字 */
+            font-weight: 500 !important; /* 恢复默认字重 */
+        }
+    </style>
 </head>
-<body class="bg-dark text-light font-sans overflow-x-hidden">
+
+<body class="bg-dark text-light antialiased">
     <!-- 导航栏 -->
-    <header id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
-        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
-            <a href="index.html" class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
-                    <i class="fa fa-robot text-white text-xl"></i>
-                </div>
-                <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">森诺智联</span>
-            </a>
-            
-            <!-- 桌面导航 -->
-            <nav class="hidden md:flex items-center space-x-8">
-                <a href="index.html" class="text-white hover:text-secondary transition-colors">首页</a>
-                <div class="relative group">
-                    <a href="products.html" class="text-white hover:text-secondary transition-colors flex items-center">
-                        产品中心
-                        <i class="fa fa-chevron-down ml-1 text-xs transition-transform group-hover:rotate-180"></i>
-                    </a>
-                    <div class="absolute left-0 mt-2 w-48 bg-dark/95 backdrop-blur-md rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-secondary/30">
-                        <a href="product-security.html" class="block px-4 py-3 hover:bg-secondary/20 transition-colors">安保机器人</a>
-                        <a href="product-inspection.html" class="block px-4 py-3 hover:bg-secondary/20 transition-colors">巡检机器人</a>
-                        <a href="product-guide.html" class="block px-4 py-3 hover:bg-secondary/20 transition-colors">导览机器人</a>
-                        <a href="product-cleaning.html" class="block px-4 py-3 hover:bg-secondary/20 transition-colors">清洁机器人</a>
-                        <a href="product-edu.html" class="block px-4 py-3 hover:bg-secondary/20 transition-colors">教育机器人</a>
-                        <a href="product-man.html" class="block px-4 py-3 hover:bg-secondary/20 transition-colors">人形机器人</a>
+    <header id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <a href="#home" class="flex items-center space-x-2">
+                    <!-- 替换为公司实际Logo -->
+                    <div class="w-10 h-10">
+                        <img src="./images/logo.png" alt="森诺智联Logo" class="w-full h-full object-contain">
                     </div>
-                </div>
-                <a href="cooperation.html" class="text-white hover:text-secondary transition-colors">产学研合作</a>
-                <a href="cases.html" class="text-white hover:text-secondary transition-colors">项目案例</a>
-                <a href="about.html" class="text-white hover:text-secondary transition-colors">关于我们</a>
-                <a href="contact.html" class="bg-secondary hover:bg-secondary/80 text-white px-6 py-2 rounded-lg transition-colors">联系我们</a>
-            </nav>
-            
-            <!-- 移动端菜单按钮 -->
-            <button id="menuBtn" class="md:hidden text-white text-2xl">
-                <i class="fa fa-bars"></i>
-            </button>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">森诺智联+</span>
+                </a>
+                
+                <!-- 桌面端导航 - 给"联系我们"添加no-highlight类，排除高亮 -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" data-target="home" class="text-white font-medium hover:text-primary transition-colors nav-link">首页</a>
+                    <a href="#about" data-target="about" class="text-gray-300 font-medium hover:text-primary transition-colors nav-link">关于我们</a>
+                    <a href="#products" data-target="products" class="text-gray-300 font-medium hover:text-primary transition-colors nav-link">产品中心</a>
+                    <a href="#cases" data-target="cases" class="text-gray-300 font-medium hover:text-primary transition-colors nav-link">案例展示</a>
+                    <a href="#contact" data-target="contact" class="px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transition-all transform hover:scale-105 nav-link no-highlight">
+                        联系我们
+                    </a>
+                </nav>
+                
+                <!-- 移动端汉堡菜单 -->
+                <button id="menuBtn" class="md:hidden text-white text-2xl focus:outline-none">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
         </div>
         
-        <!-- 移动端导航菜单 -->
-        <div id="mobileMenu" class="md:hidden bg-dark/98 backdrop-blur-md w-full absolute top-full left-0 shadow-lg h-0 overflow-hidden transition-all duration-300">
+        <!-- 移动端导航菜单 - 给"联系我们"添加no-highlight类 -->
+        <div id="mobileMenu" class="md:hidden bg-secondary/95 backdrop-filter blur-2xl hidden">
             <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                <a href="index.html" class="text-white hover:text-secondary transition-colors py-2 border-b border-gray-800">首页</a>
-                <div class="border-b border-gray-800 pb-2">
-                    <button id="mobileProductBtn" class="flex justify-between items-center w-full text-white hover:text-secondary transition-colors py-2">
-                        产品中心
-                        <i class="fa fa-chevron-down text-xs"></i>
-                    </button>
-                    <div id="mobileProductSubmenu" class="pl-4 mt-2 space-y-2 h-0 overflow-hidden transition-all duration-300">
-                        <a href="product-security.html" class="block text-white hover:text-secondary transition-colors py-1">安保机器人</a>
-                        <a href="product-inspection.html" class="block text-white hover:text-secondary transition-colors py-1">巡检机器人</a>
-                        <a href="product-guide.html" class="block text-white hover:text-secondary transition-colors py-1">导览机器人</a>
-                        <a href="product-cleaning.html" class="block text-white hover:text-secondary transition-colors py-1">清洁机器人</a>
-                        <a href="product-edu.html" class="block text-white hover:text-secondary transition-colors py-1">教育机器人</a>
-                        <a href="product-man.html" class="block text-white hover:text-secondary transition-colors py-1">人形机器人</a>
-                    </div>
-                </div>
-                <a href="cooperation.html" class="text-white hover:text-secondary transition-colors py-2 border-b border-gray-800">产学研合作</a>
-                <a href="cases.html" class="text-white hover:text-secondary transition-colors py-2 border-b border-gray-800">项目案例</a>
-                <a href="about.html" class="text-white hover:text-secondary transition-colors py-2 border-b border-gray-800">关于我们</a>
-                <a href="contact.html" class="bg-secondary hover:bg-secondary/80 text-white px-6 py-3 rounded-lg transition-colors text-center">联系我们</a>
+                <a href="#home" data-target="home" class="text-white font-medium py-2 border-b border-gray-700 nav-link">首页</a>
+                <a href="#about" data-target="about" class="text-gray-300 font-medium py-2 border-b border-gray-700 hover:text-primary transition-colors nav-link">关于我们</a>
+                <a href="#products" data-target="products" class="text-gray-300 font-medium py-2 border-b border-gray-700 hover:text-primary transition-colors nav-link">产品中心</a>
+                <a href="#cases" data-target="cases" class="text-gray-300 font-medium py-2 border-b border-gray-700 hover:text-primary transition-colors nav-link">案例展示</a>
+                <a href="#contact" data-target="contact" class="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium text-center transition-all nav-link no-highlight">
+                    联系我们
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- 首页Banner -->
-    <section class="relative h-screen flex items-center justify-center overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <!-- 背景视频/图片替换标记 -->
-            <video src="[替换为企业宣传视频.mp4]" autoplay loop muted class="w-full h-full object-cover opacity-40"></video>
-            <div class="absolute inset-0 bg-gradient-tech opacity-80"></div>
-        </div>
-        <div class="container mx-auto px-4 md:px-8 relative z-10 text-center">
-            <h1 class="text-[clamp(2.5rem,8vw,5rem)] font-bold leading-tight text-shadow mb-6">
-                智能机器人<br><span class="text-secondary">驱动产业升级</span>
-            </h1>
-            <p class="text-[clamp(1rem,3vw,1.25rem)] text-gray-300 max-w-3xl mx-auto mb-10">
-                专注工业与农业智能化领域，通过机器人技术与人工智能深度融合，提供高效、安全、精准的智能化解决方案
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="products.html" class="bg-secondary hover:bg-secondary/80 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all transform hover:scale-105">
-                    探索产品
-                </a>
-                <a href="contact.html" class="bg-transparent border-2 border-white hover:border-secondary hover:text-secondary text-white px-8 py-3 rounded-lg text-lg font-medium transition-all">
-                    咨询合作
-                </a>
-            </div>
-        </div>
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <a href="#about" class="text-white text-3xl opacity-70 hover:opacity-100 transition-opacity">
-                <i class="fa fa-angle-down"></i>
-            </a>
-        </div>
-    </section>
-
-    <!-- 公司简介 -->
-    <section id="about" class="py-20 bg-gradient-to-b from-dark to-primary/30">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">关于森诺智联</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
-                <p class="text-gray-300 max-w-3xl mx-auto">
-                    高新技术企业，深耕工业与农业智能化领域，以技术创新为核心驱动力
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <!-- 公司环境图片替换标记 -->
-                    <div class="rounded-xl overflow-hidden shadow-2xl">
-                        <img src="[替换为公司办公环境/工厂图片.jpg]" alt="森诺智联公司环境" class="w-full h-auto object-cover">
+    <main>
+        <!-- Hero区 - home模块 -->
+        <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+            <!-- 背景图（替换为公司机器人相关图片） -->
+            <div class="absolute inset-0 z-0">
+                <img src="./images/index_bg.png" alt="智能机器人背景" class="w-full h-full object-cover opacity-30">
+                <div class="absolute inset-0 bg-gradient-to-b from-dark/30 to-dark"></div>
+            </div>            
+            <!-- Hero内容 -->
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <div class="animate-fade-in">
+                    <h1 class="text-[clamp(2.5rem,6vw,4rem)] font-bold leading-tight text-shadow-lg mb-6">
+                        引领<span class="text-primary">智能机器人</span>创新<br>
+                        赋能<span class="text-accent">未来产业</span>变革
+                    </h1>
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+                        专注于工业级智能机器人研发与应用，提供从核心技术到整体解决方案的全链条服务，助力企业实现自动化升级与数字化转型。
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <!-- 确保按钮跳转也有滚动效果 -->
+                        <a href="#products" class="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
+                            探索产品 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#contact" class="px-8 py-3 bg-transparent border-2 border-white/30 hover:border-white/50 text-white rounded-lg font-semibold transition-all">
+                            咨询方案
+                        </a>
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-6 text-secondary">技术创新驱动产业升级</h3>
-                    <p class="text-gray-300 mb-6 leading-relaxed">
-                        森诺智联嘉（大连）高新产业技术研究有限公司，专注于智能机器人研发与应用的高新技术企业。我们以"技术创新驱动产业升级"为核心使命，致力于通过机器人技术与人工智能的深度融合，为各行业提供高效、安全、精准的智能化解决方案。
-                    </p>
-                    <div class="grid grid-cols-2 gap-6 mb-8">
-                        <div class="flex flex-col items-center p-4 bg-dark/50 rounded-lg border border-secondary/20">
-                            <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
-                                <i class="fa fa-lightbulb-o text-secondary text-2xl"></i>
-                            </div>
-                            <h4 class="text-lg font-semibold mb-2">技术创新</h4>
-                            <p class="text-gray-400 text-center text-sm">持续推动智能机器人技术突破</p>
-                        </div>
-                        <div class="flex flex-col items-center p-4 bg-dark/50 rounded-lg border border-secondary/20">
-                            <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
-                                <i class="fa fa-handshake-o text-secondary text-2xl"></i>
-                            </div>
-                            <h4 class="text-lg font-semibold mb-2">产学研用</h4>
-                            <p class="text-gray-400 text-center text-sm">协同创新加速成果转化</p>
-                        </div>
-                        <div class="flex flex-col items-center p-4 bg-dark/50 rounded-lg border border-secondary/20">
-                            <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
-                                <i class="fa fa-cogs text-secondary text-2xl"></i>
-                            </div>
-                            <h4 class="text-lg font-semibold mb-2">解决方案</h4>
-                            <p class="text-gray-400 text-center text-sm">适配多场景定制化需求</p>
-                        </div>
-                        <div class="flex flex-col items-center p-4 bg-dark/50 rounded-lg border border-secondary/20">
-                            <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-4">
-                                <i class="fa fa-users text-secondary text-2xl"></i>
-                            </div>
-                            <h4 class="text-lg font-semibold mb-2">客户至上</h4>
-                            <p class="text-gray-400 text-center text-sm">提供稳定可靠的产品服务</p>
-                        </div>
-                    </div>
-                    <a href="about.html" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium">
-                        了解更多 <i class="fa fa-arrow-right ml-2"></i>
+                
+                <!-- 滚动提示 - 跳转至about模块 -->
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                    <a href="#about" class="text-white/60 hover:text-white transition-colors">
+                        <i class="fa fa-chevron-down text-2xl"></i>
                     </a>
                 </div>
             </div>
-        </div>
-    </section>
+            
+            <!-- 装饰元素 -->
+            <div class="absolute top-1/4 right-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl animate-float"></div>
+            <div class="absolute bottom-1/3 left-10 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-float" style="animation-delay: 2s"></div>
+        </section>
 
-    <!-- 核心产品 -->
-    <section class="py-20 bg-dark">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">核心产品矩阵</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
-                <p class="text-gray-300 max-w-3xl mx-auto">
-                    覆盖安保、巡检、导览、清洁等多场景，提供全流程智能化解决方案
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- 安保机器人 -->
-                <div class="bg-dark/60 border border-secondary/20 rounded-xl overflow-hidden shadow-lg card-hover">
-                    <!-- 产品图片替换标记 -->
-                    <div class="h-48 overflow-hidden">
-                        <img src="[替换为安保机器人产品图.jpg]" alt="安保机器人" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+        <!-- 公司简介 - about模块 -->
+        <section id="about" class="py-20 bg-secondary">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <!-- 左侧图片 -->
+                    <div class="lg:w-1/2 animate-on-scroll">
+                        <div class="relative rounded-xl overflow-hidden shadow-2xl">
+                            <!-- 替换为公司环境/团队图片 -->
+                            <img src="./images/company_bg.png" alt="公司环境" class="w-full h-auto rounded-xl">
+                            <div class="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-60"></div>
+                        </div>
                     </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-secondary">安保机器人</h3>
-                        <p class="text-gray-400 mb-4 text-sm">24小时巡逻执勤，智能识别异常，多区域联动，提升园区安保质量</p>
-                        <a href="product-security.html" class="inline-block text-secondary hover:text-secondary/80 font-medium text-sm">
-                            查看详情 <i class="fa fa-angle-right ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 巡检机器人 -->
-                <div class="bg-dark/60 border border-secondary/20 rounded-xl overflow-hidden shadow-lg card-hover">
-                    <!-- 产品图片替换标记 -->
-                    <div class="h-48 overflow-hidden">
-                        <img src="[替换为巡检机器人产品图.jpg]" alt="巡检机器人" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-secondary">巡检机器人</h3>
-                        <p class="text-gray-400 mb-4 text-sm">适应极端环境，高精度识别，全地形通行，保障工业生产安全</p>
-                        <a href="product-inspection.html" class="inline-block text-secondary hover:text-secondary/80 font-medium text-sm">
-                            查看详情 <i class="fa fa-angle-right ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 导览机器人 -->
-                <div class="bg-dark/60 border border-secondary/20 rounded-xl overflow-hidden shadow-lg card-hover">
-                    <!-- 产品图片替换标记 -->
-                    <div class="h-48 overflow-hidden">
-                        <img src="[替换为导览机器人产品图.jpg]" alt="导览机器人" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-secondary">导览机器人</h3>
-                        <p class="text-gray-400 mb-4 text-sm">智能迎宾接待，多模态交互，定制化讲解，打造沉浸式体验</p>
-                        <a href="product-guide.html" class="inline-block text-secondary hover:text-secondary/80 font-medium text-sm">
-                            查看详情 <i class="fa fa-angle-right ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 清洁机器人 -->
-                <div class="bg-dark/60 border border-secondary/20 rounded-xl overflow-hidden shadow-lg card-hover">
-                    <!-- 产品图片替换标记 -->
-                    <div class="h-48 overflow-hidden">
-                        <img src="[替换为清洁机器人产品图.jpg]" alt="清洁机器人" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-3 text-secondary">清洁机器人</h3>
-                        <p class="text-gray-400 mb-4 text-sm">洗扫推吸四合一，自动加排水，24小时持续工作，提升清洁效率</p>
-                        <a href="product-cleaning.html" class="inline-block text-secondary hover:text-secondary/80 font-medium text-sm">
-                            查看详情 <i class="fa fa-angle-right ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mt-12">
-                <a href="products.html" class="inline-flex items-center justify-center bg-transparent border-2 border-secondary hover:bg-secondary hover:text-white text-secondary px-8 py-3 rounded-lg transition-colors">
-                    查看全部产品 <i class="fa fa-arrow-right ml-2"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 技术优势 -->
-    <section class="py-20 bg-gradient-to-b from-dark to-primary/20">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">核心技术优势</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
-                <p class="text-gray-300 max-w-3xl mx-auto">
-                    以AI算法为核心，融合多传感器技术，打造稳定可靠的智能机器人系统
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl p-8 card-hover">
-                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mb-6">
-                        <i class="fa fa-microchip text-secondary text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 text-secondary">AI智能算法</h3>
-                    <p class="text-gray-400 mb-4">
-                        基于图像深度学习技术，实现人脸、车牌、异常行为等高精度识别，识别准确率达98%以上
-                    </p>
-                    <ul class="text-gray-400 space-y-2 text-sm">
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>多模态数据融合分析</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>实时动态场景识别</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>自主学习进化能力</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl p-8 card-hover">
-                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mb-6">
-                        <i class="fa fa-map-marker text-secondary text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 text-secondary">智能导航避障</h3>
-                    <p class="text-gray-400 mb-4">
-                        融合激光雷达、视觉传感器，实现无轨道导航与实时路径规划，适应复杂环境
-                    </p>
-                    <ul class="text-gray-400 space-y-2 text-sm">
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>360°全方位环境感知</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>跨层多区自主通行</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>动态避障响应迅速</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl p-8 card-hover">
-                    <div class="w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mb-6">
-                        <i class="fa fa-shield text-secondary text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-4 text-secondary">稳定可靠设计</h3>
-                    <p class="text-gray-400 mb-4">
-                        IP55级防护与宽温域工作能力，适配极端环境，模块化设计确保设备稳定运行
-                    </p>
-                    <ul class="text-gray-400 space-y-2 text-sm">
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>-20°C至50°C宽温工作</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>防尘防水耐腐蚀</span>
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fa fa-check text-accent mt-1 mr-2"></i>
-                            <span>模块化易维护设计</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- 技术展示视频 -->
-            <div class="mt-20 bg-dark/30 rounded-xl overflow-hidden">
-                <div class="grid md:grid-cols-2">
-                    <div class="p-8 flex flex-col justify-center">
-                        <h3 class="text-2xl font-bold mb-4 text-secondary">FLY·天枢系统</h3>
+                    
+                    <!-- 右侧内容 -->
+                    <div class="lg:w-1/2 animate-on-scroll">
+                        <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">关于我们</span>
+                        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
+                            以<span class="text-primary">技术创新</span>驱动，<br>
+                            打造机器人领域领军品牌
+                        </h2>
                         <p class="text-gray-300 mb-6 leading-relaxed">
-                            率先研发的"FLY·天枢系统"，提出机器人在真实场景中"感知-认知-决策-执行"一体化的落地模型。实现机器人从被动响应走向主动理解，成为人类生产力的重要延展。
+                            专注于智能机器人研发与应用的高新技术企业，深耕于工业与农业智能化领域，以“技术创新驱动产业升级”为核心使命，致力于通过机器人技术与人工智能的深度融合，为各行业提供高效、安全、精准的智能化解决方案。
                         </p>
-                        <ul class="text-gray-400 space-y-3 mb-8">
-                            <li class="flex items-center">
-                                <div class="w-2 h-2 bg-accent rounded-full mr-3"></div>
-                                <span>嘈杂环境下高准确率语义理解</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="w-2 h-2 bg-accent rounded-full mr-3"></div>
-                                <span>深层语义解析与对话延伸</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="w-2 h-2 bg-accent rounded-full mr-3"></div>
-                                <span>跨模态联动实现无缝执行</span>
-                            </li>
-                        </ul>
-                        <a href="about.html#technology" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium">
-                            了解更多技术 <i class="fa fa-arrow-right ml-2"></i>
-                        </a>
-                    </div>
-                    <div class="relative">
-                        <!-- 技术演示视频替换标记 -->
-                        <div class="absolute inset-0 flex items-center justify-center z-10">
-                            <button class="w-20 h-20 bg-secondary/80 hover:bg-secondary rounded-full flex items-center justify-center transition-colors">
-                                <i class="fa fa-play text-white text-3xl ml-1"></i>
-                            </button>
-                        </div>
-                        <video poster="[替换为视频封面图.jpg]" class="w-full h-full object-cover">
-                            <source src="[替换为FLY·天枢系统演示视频.mp4]" type="video/mp4">
-                        </video>
+                        <p class="text-gray-300 mb-8 leading-relaxed">
+                            作为高新技术产业的重要参与者，森诺智联嘉始终以技术创新为引擎，以产业需求为导向，深度与高校、科研院所、产业伙伴合作，加速技术成果转化，致力于成为智能机器人领域 “产学研用” 协同创新的典范，为推动产业智能化升级贡献核心技术力量。
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 产学研合作 -->
-    <section class="py-20 bg-dark">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">产学研合作</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
-                <p class="text-gray-300 max-w-3xl mx-auto">
-                    深度联合高校科研团队，共研新技术并落地应用，加速成果转化
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
-                <div>
-                    <h3 class="text-2xl font-bold mb-6 text-secondary">高校合作网络</h3>
-                    <p class="text-gray-300 mb-8 leading-relaxed">
-                        与大连理工大学等高校构建深度绑定的合作模式，挖掘AI算法在光学信号处理、图像分析、机器人识别等领域的应用潜力，探索多维度的技术结合范式，打造兼具创新性与实用性的智能检测技术体系。
+        <!-- 核心产品 - products模块 -->
+        <section id="products" class="py-20 bg-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- 标题栏 -->
+                <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+                    <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">核心产品</span>
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
+                        多元化<span class="text-primary">机器人产品矩阵</span>
+                    </h2>
+                    <p class="text-gray-300 leading-relaxed">
+                        针对不同行业场景需求，研发覆盖便民服务、商业表演、科学教育的全系列智能机器人产品，提供灵活可靠的自动化解决方案。
                     </p>
-
-                    <div class="grid grid-cols-2 gap-6 mb-8">
-                        <!-- 合作高校Logo替换标记 -->
-                        <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-24">
-                            <img src="[替换为大连理工大学校徽.png]" alt="大连理工大学" class="max-h-16 max-w-full object-contain">
+                </div>
+                
+                <!-- 产品卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 产品1 -->
+                    <div class="group bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll">
+                        <div class="relative h-60 overflow-hidden">
+                            <!-- 替换为产品图片 -->
+                            <img src="https://picsum.photos/id/96/600/400" alt="工业协作机器人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute top-4 left-4 px-3 py-1 bg-primary text-white text-xs font-medium rounded-full">
+                                服务系列
+                            </div>
                         </div>
-                        <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-24">
-                            <img src="[替换为合作高校校徽.png]" alt="合作高校" class="max-h-16 max-w-full object-contain">
-                        </div>
-                        <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-24">
-                            <img src="[替换为合作高校校徽.png]" alt="合作高校" class="max-h-16 max-w-full object-contain">
-                        </div>
-                        <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-24">
-                            <img src="[替换为合作高校校徽.png]" alt="合作高校" class="max-h-16 max-w-full object-contain">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">工业协作机器人</h3>
+                            <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                                负载3-20kg，重复定位精度±0.02mm，支持拖拽示教、视觉引导，适用于装配、搬运、焊接等工业场景
+                            </p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2 text-sm text-gray-400">
+                                    <span><i class="fa fa-cogs mr-1"></i> 多轴联动</span>
+                                    <span><i class="fa fa-eye mr-1"></i> 视觉定位</span>
+                                </div>
+                                <!-- 确保产品详情跳转也有滚动效果 -->
+                                <a href="#products" class="text-primary font-medium hover:text-primary/80 transition-colors">
+                                    查看详情 <i class="fa fa-angle-right ml-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-                    <a href="cooperation.html" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium">
-                        查看合作详情 <i class="fa fa-arrow-right ml-2"></i>
+                    
+                    <!-- 产品2 -->
+                    <div class="group bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.1s">
+                        <div class="relative h-60 overflow-hidden">
+                            <!-- 替换为产品图片 -->
+                            <img src="https://picsum.photos/id/42/600/400" alt="AGV移动机器人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute top-4 left-4 px-3 py-1 bg-accent text-dark text-xs font-medium rounded-full">
+                                表演系列
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">AGV移动机器人</h3>
+                            <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                                激光SLAM导航，最大负载500kg，支持自主避障、路径规划，适用于仓库货物搬运、生产线物料配送
+                            </p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2 text-sm text-gray-400">
+                                    <span><i class="fa fa-map-marker mr-1"></i> SLAM导航</span>
+                                    <span><i class="fa fa-shield mr-1"></i> 自主避障</span>
+                                </div>
+                                <a href="#products" class="text-primary font-medium hover:text-primary/80 transition-colors">
+                                    查看详情 <i class="fa fa-angle-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 产品3 -->
+                    <div class="group bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.2s">
+                        <div class="relative h-60 overflow-hidden">
+                            <!-- 替换为产品图片 -->
+                            <img src="https://picsum.photos/id/60/600/400" alt="服务机器人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute top-4 left-4 px-3 py-1 bg-purple-500 text-white text-xs font-medium rounded-full">
+                                教育系列
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">智能服务机器人</h3>
+                            <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                                集成AI语音交互、人脸识别、环境感知，适用于政务大厅、银行、医院、商场等场景的导览、咨询、接待服务
+                            </p>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-2 text-sm text-gray-400">
+                                    <span><i class="fa fa-microphone mr-1"></i> 语音交互</span>
+                                    <span><i class="fa fa-user mr-1"></i> 人脸识别</span>
+                                </div>
+                                <a href="#products" class="text-primary font-medium hover:text-primary/80 transition-colors">
+                                    查看详情 <i class="fa fa-angle-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查看更多产品 - 确保跳转有滚动效果 -->
+                <div class="text-center mt-12 animate-on-scroll">
+                    <a href="#products" class="inline-block px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-semibold transition-all duration-300">
+                        查看全部产品 <i class="fa fa-arrow-right ml-2"></i>
                     </a>
                 </div>
-                <div>
-                    <!-- 产学研合作图片替换标记 -->
-                    <div class="rounded-xl overflow-hidden shadow-2xl">
-                        <img src="[替换为产学研合作场景图.jpg]" alt="产学研合作" class="w-full h-auto object-cover">
-                    </div>
-                </div>
             </div>
+        </section>
 
-            <!-- 科研团队展示 -->
-            <div>
-                <h3 class="text-2xl font-bold mb-8 text-center text-secondary">核心科研团队</h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- 科研人员1 -->
-                    <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                        <!-- 科研人员照片替换标记 -->
-                        <div class="h-64 overflow-hidden">
-                            <img src="[替换为胡香敏教授照片.jpg]" alt="胡香敏教授" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6">
-                            <h4 class="text-xl font-bold mb-1">胡香敏</h4>
-                            <p class="text-secondary mb-3">副教授、博士生导师</p>
-                            <p class="text-gray-400 text-sm mb-4">
-                                清华大学机械工程博士，发表10余篇SCI论文，被引用2000多次，主持多项国家级科研项目
-                            </p>
-                            <div class="flex items-center text-sm text-gray-500">
-                                <i class="fa fa-flask mr-2 text-secondary"></i>
-                                <span>研究方向：光谱智能成像技术与仪器</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 科研人员2 -->
-                    <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                        <!-- 科研人员照片替换标记 -->
-                        <div class="h-64 overflow-hidden">
-                            <img src="[替换为科研人员照片.jpg]" alt="科研人员" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6">
-                            <h4 class="text-xl font-bold mb-1">XXX</h4>
-                            <p class="text-secondary mb-3">教授、博士生导师</p>
-                            <p class="text-gray-400 text-sm mb-4">
-                                机器人工程领域专家，多年智能机器人研发经验，主持多项省部级科研项目
-                            </p>
-                            <div class="flex items-center text-sm text-gray-500">
-                                <i class="fa fa-flask mr-2 text-secondary"></i>
-                                <span>研究方向：智能机器人导航技术</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 科研人员3 -->
-                    <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                        <!-- 科研人员照片替换标记 -->
-                        <div class="h-64 overflow-hidden">
-                            <img src="[替换为科研人员照片.jpg]" alt="科研人员" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6">
-                            <h4 class="text-xl font-bold mb-1">XXX</h4>
-                            <p class="text-secondary mb-3">副教授、硕士生导师</p>
-                            <p class="text-gray-400 text-sm mb-4">
-                                AI算法领域专家，专注于计算机视觉与深度学习研究，发表多篇高水平学术论文
-                            </p>
-                            <div class="flex items-center text-sm text-gray-500">
-                                <i class="fa fa-flask mr-2 text-secondary"></i>
-                                <span>研究方向：计算机视觉与模式识别</span>
-                            </div>
-                        </div>
-                    </div>
+        <!-- 案例展示 - cases模块 -->
+        <section id="cases" class="py-20 bg-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- 标题栏 -->
+                <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+                    <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">成功案例</span>
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
+                        赋能<span class="text-primary">各行业</span>客户价值提升
+                    </h2>
+                    <p class="text-gray-300 leading-relaxed">
+                        已为汽车、电子、物流、医疗等多个行业的知名企业提供智能机器人解决方案，获得客户高度认可
+                    </p>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 项目案例 -->
-    <section class="py-20 bg-gradient-to-b from-dark to-primary/20">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">成功项目案例</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
-                <p class="text-gray-300 max-w-3xl mx-auto">
-                    已在多个行业落地应用，为客户创造显著价值
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-10 mb-16">
-                <!-- 案例1 -->
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                    <div class="grid md:grid-cols-2">
-                        <!-- 案例图片替换标记 -->
-                        <div class="h-64 md:h-auto overflow-hidden">
-                            <img src="[替换为机场安保机器人项目图.jpg]" alt="机场安保机器人项目" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6 flex flex-col justify-center">
-                            <span class="text-accent text-sm font-medium mb-2">机场应用</span>
-                            <h3 class="text-xl font-bold mb-3 text-secondary">某机场安保机器人项目</h3>
-                            <p class="text-gray-400 mb-4 text-sm">
-                                为机场提供24小时巡逻、业务咨询、地图指引、广告播放等服务，提升机场智能化服务水平
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">安保巡逻</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">业务咨询</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">地图指引</span>
-                            </div>
-                            <a href="case-detail.html" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium text-sm mt-auto">
-                                查看详情 <i class="fa fa-angle-right ml-1"></i>
-                            </a>
-                        </div>
-                    </div>
+                
+                <!-- 案例筛选 -->
+                <div class="flex flex-wrap justify-center gap-4 mb-12 animate-on-scroll">
+                    <button class="case-filter px-5 py-2 rounded-full bg-primary text-white text-sm font-medium" data-filter="all">全部案例</button>
+                    <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="automotive">汽车制造</button>
+                    <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="electronics">电子电器</button>
+                    <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="logistics">物流仓储</button>
+                    <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="medical">医疗健康</button>
                 </div>
-
-                <!-- 案例2 -->
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                    <div class="grid md:grid-cols-2">
-                        <!-- 案例图片替换标记 -->
-                        <div class="h-64 md:h-auto overflow-hidden">
-                            <img src="[替换为园区巡维项目图.jpg]" alt="园区综合巡维项目" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6 flex flex-col justify-center">
-                            <span class="text-accent text-sm font-medium mb-2">园区应用</span>
-                            <h3 class="text-xl font-bold mb-3 text-secondary">陕西某园区综合巡维项目</h3>
-                            <p class="text-gray-400 mb-4 text-sm">
-                                以5D数字孪生技术为核心，实现园区设备、人员、环境等全局态势掌控，提升园区管理效率
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">数字孪生</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">智能巡检</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">全局监控</span>
-                            </div>
-                            <a href="case-detail.html" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium text-sm mt-auto">
-                                查看详情 <i class="fa fa-angle-right ml-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 案例3 -->
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                    <div class="grid md:grid-cols-2">
-                        <!-- 案例图片替换标记 -->
-                        <div class="h-64 md:h-auto overflow-hidden">
-                            <img src="[替换为采油厂巡检项目图.jpg]" alt="采油厂巡检机器人项目" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6 flex flex-col justify-center">
-                            <span class="text-accent text-sm font-medium mb-2">工业应用</span>
-                            <h3 class="text-xl font-bold mb-3 text-secondary">某第三采油厂巡检机器人项目</h3>
-                            <p class="text-gray-400 mb-4 text-sm">
-                                自主完成外输岗、注水岗等设备巡检，实时数据采集与预警分析，提升油田生产安全水平
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">工业巡检</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">数据采集</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">安全预警</span>
-                            </div>
-                            <a href="case-detail.html" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium text-sm mt-auto">
-                                查看详情 <i class="fa fa-angle-right ml-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 案例4 -->
-                <div class="bg-dark/50 border border-secondary/20 rounded-xl overflow-hidden card-hover">
-                    <div class="grid md:grid-cols-2">
-                        <!-- 案例图片替换标记 -->
-                        <div class="h-64 md:h-auto overflow-hidden">
-                            <img src="[替换为酒店清洁项目图.jpg]" alt="大型酒店清洁项目" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6 flex flex-col justify-center">
-                            <span class="text-accent text-sm font-medium mb-2">商业应用</span>
-                            <h3 class="text-xl font-bold mb-3 text-secondary">某大型酒店清洁项目</h3>
-                            <p class="text-gray-400 mb-4 text-sm">
-                                13层综合空间清洁解决方案，洗扫推吸四合一，显著提升清洁效率，解放人力资源
-                            </p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">商业清洁</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">高效作业</span>
-                                <span class="bg-secondary/20 text-secondary text-xs px-3 py-1 rounded-full">多场景适配</span>
-                            </div>
-                            <a href="case-detail.html" class="inline-flex items-center text-secondary hover:text-secondary/80 font-medium text-sm mt-auto">
-                                查看详情 <i class="fa fa-angle-right ml-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <a href="cases.html" class="inline-flex items-center justify-center bg-transparent border-2 border-secondary hover:bg-secondary hover:text-white text-secondary px-8 py-3 rounded-lg transition-colors">
-                    查看全部案例 <i class="fa fa-arrow-right ml-2"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- 合作伙伴 -->
-    <section class="py-16 bg-dark">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-4">战略合作伙伴</h2>
-                <div class="w-20 h-1 bg-secondary mx-auto"></div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
-                <!-- 合作伙伴Logo替换标记 -->
-                <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-20">
-                    <img src="[替换为安森智能Logo.png]" alt="安森智能" class="max-h-12 max-w-full object-contain">
-                </div>
-                <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-20">
-                    <img src="[替换为七腾机器人Logo.png]" alt="七腾机器人" class="max-h-12 max-w-full object-contain">
-                </div>
-                <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-20">
-                    <img src="[替换为千巡科技Logo.png]" alt="千巡科技" class="max-h-12 max-w-full object-contain">
-                </div>
-                <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-20">
-                    <img src="[替换为飞阔科技Logo.png]" alt="飞阔科技" class="max-h-12 max-w-full object-contain">
-                </div>
-                <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-20">
-                    <img src="[替换为合作伙伴Logo.png]" alt="合作伙伴" class="max-h-12 max-w-full object-contain">
-                </div>
-                <div class="bg-dark/50 border border-secondary/20 rounded-lg p-4 flex items-center justify-center h-20">
-                    <img src="[替换为合作伙伴Logo.png]" alt="合作伙伴" class="max-h-12 max-w-full object-contain">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 联系我们 -->
-    <section class="py-20 bg-gradient-to-b from-primary/20 to-dark">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">联系我们</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-6"></div>
-                <p class="text-gray-300 max-w-3xl mx-auto">
-                    无论您有产品咨询、合作意向还是技术交流需求，我们都将竭诚为您服务
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-12">
-                <div>
-                    <form class="bg-dark/50 border border-secondary/20 rounded-xl p-8">
-                        <h3 class="text-xl font-bold mb-6 text-secondary">发送咨询</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label for="name" class="block text-gray-300 mb-2 text-sm">姓名</label>
-                                <input type="text" id="name" class="w-full bg-dark/80 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-secondary">
-                            </div>
-                            <div>
-                                <label for="phone" class="block text-gray-300 mb-2 text-sm">电话</label>
-                                <input type="tel" id="phone" class="w-full bg-dark/80 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-secondary">
-                            </div>
-                        </div>
-                        <div class="mb-6">
-                            <label for="company" class="block text-gray-300 mb-2 text-sm">公司名称</label>
-                            <input type="text" id="company" class="w-full bg-dark/80 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-secondary">
-                        </div>
-                        <div class="mb-6">
-                            <label for="interest" class="block text-gray-300 mb-2 text-sm">感兴趣的产品/服务</label>
-                            <select id="interest" class="w-full bg-dark/80 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-secondary">
-                                <option value="">请选择</option>
-                                <option value="security">安保机器人</option>
-                                <option value="inspection">巡检机器人</option>
-                                <option value="guide">导览机器人</option>
-                                <option value="cleaning">清洁机器人</option>
-                                <option value="cooperation">合作洽谈</option>
-                                <option value="other">其他咨询</option>
-                            </select>
-                        </div>
-                        <div class="mb-8">
-                            <label for="message" class="block text-gray-300 mb-2 text-sm">留言内容</label>
-                            <textarea id="message" rows="4" class="w-full bg-dark/80 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-secondary"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-secondary hover:bg-secondary/80 text-white py-3 rounded-lg transition-colors font-medium">
-                            提交咨询
-                        </button>
-                    </form>
-                </div>
-                <div class="flex flex-col justify-between">
-                    <div>
-                        <h3 class="text-2xl font-bold mb-8 text-secondary">联系方式</h3>
-                        <div class="space-y-6 mb-12">
-                            <div class="flex items-start">
-                                <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                    <i class="fa fa-map-marker text-secondary text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-1">公司地址</h4>
-                                    <p class="text-gray-400">辽宁省大连高新技术产业园区黄浦路533号海创国际产业大厦30层02单元</p>
+                
+                <!-- 案例卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 案例1 -->
+                    <div class="case-item group" data-category="automotive">
+                        <div class="bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll">
+                            <div class="relative h-56 overflow-hidden">
+                                <!-- 替换为案例图片 -->
+                                <img src="https://picsum.photos/id/111/600/350" alt="汽车零部件装配案例" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <div class="absolute inset-0 gradient-overlay"></div>
+                                <div class="absolute bottom-4 left-4 px-3 py-1 bg-primary/80 text-white text-xs font-medium rounded-full">
+                                    汽车制造
                                 </div>
                             </div>
-                            <div class="flex items-start">
-                                <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                    <i class="fa fa-phone text-secondary text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-1">联系电话</h4>
-                                    <p class="text-gray-400">营销部：13147858806</p>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">汽车零部件自动化装配</h3>
+                                <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                                    为某知名汽车制造商提供12台协作机器人，实现发动机零部件自动化装配，生产效率提升35%，不良率降低60%
+                                </p>
+                                <!-- 案例详情跳转 -->
+                                <a href="#cases" class="text-primary font-medium hover:text-primary/80 transition-colors text-sm">
+                                    查看案例详情 <i class="fa fa-angle-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 案例2 -->
+                    <div class="case-item group" data-category="electronics">
+                        <div class="bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.1s">
+                            <div class="relative h-56 overflow-hidden">
+                                <!-- 替换为案例图片 -->
+                                <img src="https://picsum.photos/id/160/600/350" alt="电子设备检测案例" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <div class="absolute inset-0 gradient-overlay"></div>
+                                <div class="absolute bottom-4 left-4 px-3 py-1 bg-accent/80 text-dark text-xs font-medium rounded-full">
+                                    电子电器
                                 </div>
                             </div>
-                            <div class="flex items-start">
-                                <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                    <i class="fa fa-envelope text-secondary text-xl"></i>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">电子设备视觉检测</h3>
+                                <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                                    为某消费电子企业提供机器视觉检测系统，结合6台SCARA机器人，实现手机屏幕缺陷检测，检测效率提升4倍
+                                </p>
+                                <a href="#cases" class="text-primary font-medium hover:text-primary/80 transition-colors text-sm">
+                                    查看案例详情 <i class="fa fa-angle-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 案例3 -->
+                    <div class="case-item group" data-category="logistics">
+                        <div class="bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.2s">
+                            <div class="relative h-56 overflow-hidden">
+                                <!-- 替换为案例图片 -->
+                                <img src="https://picsum.photos/id/180/600/350" alt="智能仓储案例" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <div class="absolute inset-0 gradient-overlay"></div>
+                                <div class="absolute bottom-4 left-4 px-3 py-1 bg-purple-500/80 text-white text-xs font-medium rounded-full">
+                                    物流仓储
                                 </div>
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-1">电子邮箱</h4>
-                                    <p class="text-gray-400">contact@sennuowisdomlink.com</p>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-3 group-hover:text-primary transition-colors">智能仓储AGV系统</h3>
+                                <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                                    为某电商物流中心部署30台AGV机器人，实现货物出入库自动化搬运，仓库空间利用率提升25%，人力成本降低40%
+                                </p>
+                                <a href="#cases" class="text-primary font-medium hover:text-primary/80 transition-colors text-sm">
+                                    查看案例详情 <i class="fa fa-angle-right ml-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>      
+                <!-- 查看更多案例 -->
+                <div class="text-center mt-12 animate-on-scroll">
+                    <a href="#cases" class="inline-block px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-semibold transition-all duration-300">
+                        查看全部案例 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们 - contact模块 -->
+        <section id="contact" class="py-20 bg-secondary">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
+                    <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">联系我们</span>
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
+                        携手<span class="text-primary">合作</span>，共创未来
+                    </h2>
+                    <p class="text-gray-300 leading-relaxed">
+                        无论您是需要产品咨询、方案定制还是技术支持，我们的团队都将为您提供专业、高效的服务
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- 联系信息 -->
+                    <div class="animate-on-scroll">
+                        <div class="bg-dark/50 rounded-xl p-8 shadow-lg">
+                            <h3 class="text-2xl font-bold mb-8">联系方式</h3>
+                            <ul class="space-y-6">
+                                <li class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary mt-1">
+                                        <i class="fa fa-map-marker text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">公司地址</h4>
+                                        <p class="text-gray-300">辽宁省大连高新技术产业园区黄浦路533号海创国际产业大厦30层02单元</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary mt-1">
+                                        <i class="fa fa-phone text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">联系电话</h4>
+                                        <p class="text-gray-300">13795159537</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary mt-1">
+                                        <i class="fa fa-envelope text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">电子邮箱</h4>
+                                        <p class="text-gray-300">contact@future-robot.com</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary mt-1">
+                                        <i class="fa fa-clock-o text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-white font-semibold mb-2">工作时间</h4>
+                                        <p class="text-gray-300">周一至周五: 9:00-18:00</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                            <!-- 社交媒体 -->
+                            <div class="mt-10">
+                                <h4 class="text-white font-semibold mb-4">关注我们</h4>
+                                <div class="flex gap-4">
+                                    <a href="#" class="w-10 h-10 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors">
+                                        <i class="fa fa-weixin text-lg"></i>
+                                    </a>
+                                    <a href="#" class="w-10 h-10 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors">
+                                        <i class="fa fa-weibo text-lg"></i>
+                                    </a>
+                                    <a href="#" class="w-10 h-10 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors">
+                                        <i class="fa fa-linkedin text-lg"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- 微信公众号二维码替换标记 -->
-                        <div class="bg-dark/50 border border-secondary/20 rounded-xl p-6 text-center">
-                            <h4 class="text-lg font-semibold mb-4">关注我们</h4>
-                            <div class="w-48 h-48 mx-auto mb-4 bg-white rounded-lg flex items-center justify-center">
-                                <img src="[替换为微信公众号二维码.png]" alt="微信公众号" class="w-full h-full object-cover p-2">
-                            </div>
-                            <p class="text-gray-400 text-sm">扫描二维码关注公众号，获取最新产品资讯</p>
-                        </div>
                     </div>
-
-                    <!-- 公司地图替换标记 -->
-                    <div class="mt-8 rounded-xl overflow-hidden h-64">
-                        <iframe src="[替换为百度地图/高德地图嵌入链接]" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    
+                    <!-- 联系表单 -->
+                    <div class="animate-on-scroll">
+                        <div class="bg-dark/50 rounded-xl p-8 shadow-lg">
+                            <h3 class="text-2xl font-bold mb-8">发送咨询</h3>
+                            <form>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label for="name" class="block text-gray-300 mb-2 text-sm">姓名</label>
+                                        <input type="text" id="name" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的姓名">
+                                    </div>
+                                    <div>
+                                        <label for="phone" class="block text-gray-300 mb-2 text-sm">电话</label>
+                                        <input type="tel" id="phone" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的电话">
+                                    </div>
+                                </div>
+                                <div class="mb-6">
+                                    <label for="email" class="block text-gray-300 mb-2 text-sm">邮箱</label>
+                                    <input type="email" id="email" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的邮箱">
+                                </div>
+                                <div class="mb-6">
+                                    <label for="subject" class="block text-gray-300 mb-2 text-sm">咨询主题</label>
+                                    <select id="subject" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors">
+                                        <option value="">请选择咨询主题</option>
+                                        <option value="product">产品咨询</option>
+                                        <option value="solution">方案定制</option>
+                                        <option value="support">技术支持</option>
+                                        <option value="cooperation">合作洽谈</option>
+                                        <option value="other">其他问题</option>
+                                    </select>
+                                </div>
+                                <div class="mb-8">
+                                    <label for="message" class="block text-gray-300 mb-2 text-sm">留言内容</label>
+                                    <textarea id="message" rows="4" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的留言内容"></textarea>
+                                </div>
+                                <button type="submit" class="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-semibold transition-all transform hover:scale-[1.02]">
+                                    提交咨询 <i class="fa fa-paper-plane ml-2"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- 页脚 -->
-    <footer class="bg-dark border-t border-secondary/20 py-12">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="grid md:grid-cols-4 gap-10 mb-10">
+    <footer class="bg-dark py-12 border-t border-white/5">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <!-- 公司信息 -->
                 <div>
-                    <a href="index.html" class="flex items-center space-x-2 mb-6">
-                        <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
+                    <a href="#home" class="flex items-center space-x-2 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
                             <i class="fa fa-robot text-white text-xl"></i>
                         </div>
-                        <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">森诺智联</span>
+                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">森诺智联</span>
                     </a>
-                    <p class="text-gray-400 mb-6 text-sm">
-                        专注智能机器人研发与应用，以技术创新驱动产业升级，为各行业提供高效、安全、精准的智能化解决方案
+                    <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                        专注智能机器人研发与应用，为全球客户提供高品质的自动化解决方案，推动产业智能化升级
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 bg-dark/50 border border-secondary/20 rounded-full flex items-center justify-center text-gray-400 hover:text-secondary hover:border-secondary transition-colors">
+                    <div class="flex gap-4">
+                        <a href="#" class="w-8 h-8 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-sm">
                             <i class="fa fa-weixin"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-dark/50 border border-secondary/20 rounded-full flex items-center justify-center text-gray-400 hover:text-secondary hover:border-secondary transition-colors">
+                        <a href="#" class="w-8 h-8 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-sm">
                             <i class="fa fa-weibo"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-dark/50 border border-secondary/20 rounded-full flex items-center justify-center text-gray-400 hover:text-secondary hover:border-secondary transition-colors">
+                        <a href="#" class="w-8 h-8 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-sm">
                             <i class="fa fa-linkedin"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 bg-dark/50 border border-secondary/20 rounded-full flex items-center justify-center text-gray-400 hover:text-secondary hover:border-secondary transition-colors">
-                            <i class="fa fa-youtube-play"></i>
                         </a>
                     </div>
                 </div>
+                
+                <!-- 快速链接 - 确保所有跳转都有滚动效果 -->
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-secondary">快速链接</h4>
-                    <ul class="space-y-3">
-                        <li><a href="index.html" class="text-gray-400 hover:text-secondary transition-colors">首页</a></li>
-                        <li><a href="products.html" class="text-gray-400 hover:text-secondary transition-colors">产品中心</a></li>
-                        <li><a href="cooperation.html" class="text-gray-400 hover:text-secondary transition-colors">产学研合作</a></li>
-                        <li><a href="cases.html" class="text-gray-400 hover:text-secondary transition-colors">项目案例</a></li>
-                        <li><a href="about.html" class="text-gray-400 hover:text-secondary transition-colors">关于我们</a></li>
-                        <li><a href="contact.html" class="text-gray-400 hover:text-secondary transition-colors">联系我们</a></li>
+                    <h4 class="text-white font-bold text-lg mb-6">快速链接</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#home" class="text-gray-300 hover:text-primary transition-colors text-sm">首页</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">产品中心</a></li>
+                        <li><a href="#cases" class="text-gray-300 hover:text-primary transition-colors text-sm">案例展示</a></li>
+                        <li><a href="#about" class="text-gray-300 hover:text-primary transition-colors text-sm">关于我们</a></li>
+                        <li><a href="#contact" class="text-gray-300 hover:text-primary transition-colors text-sm">联系我们</a></li>
                     </ul>
                 </div>
+                
+                <!-- 产品系列 -->
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-secondary">产品系列</h4>
-                    <ul class="space-y-3">
-                        <li><a href="product-security.html" class="text-gray-400 hover:text-secondary transition-colors">安保机器人</a></li>
-                        <li><a href="product-inspection.html" class="text-gray-400 hover:text-secondary transition-colors">巡检机器人</a></li>
-                        <li><a href="product-guide.html" class="text-gray-400 hover:text-secondary transition-colors">导览机器人</a></li>
-                        <li><a href="product-cleaning.html" class="text-gray-400 hover:text-secondary transition-colors">清洁机器人</a></li>
-                        <li><a href="product-picking.html" class="text-gray-400 hover:text-secondary transition-colors">水果采摘机器人</a></li>
-                        <li><a href="product-data.html" class="text-gray-400 hover:text-secondary transition-colors">数据分析系统</a></li>
+                    <h4 class="text-white font-bold text-lg mb-6">产品系列</h4>
+                    <ul class="space-y-4">
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">工业协作机器人</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">AGV移动机器人</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">智能服务机器人</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">SCARA机器人</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">机器视觉系统</a></li>
                     </ul>
                 </div>
+                
+                <!-- 联系信息 -->
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-secondary">联系我们</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fa fa-map-marker text-secondary mt-1 mr-3"></i>
-                            <span class="text-gray-400">辽宁省大连高新技术产业园区黄浦路533号海创国际产业大厦30层02单元</span>
+                    <h4 class="text-white font-bold text-lg mb-6">联系我们</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fa fa-map-marker text-primary mt-1"></i>
+                            <span class="text-gray-300 text-sm">辽宁省大连高新技术产业园区黄浦路533号海创国际产业大厦30层02单元</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fa fa-phone text-secondary mr-3"></i>
-                            <span class="text-gray-400">13147858806</span>
+                        <li class="flex items-start gap-3">
+                            <i class="fa fa-phone text-primary mt-1"></i>
+                            <span class="text-gray-300 text-sm">13795159537</span>
                         </li>
-                        <li class="flex items-center">
-                            <i class="fa fa-envelope text-secondary mr-3"></i>
-                            <span class="text-gray-400">contact@sennuowisdomlink.com</span>
+                        <li class="flex items-start gap-3">
+                            <i class="fa fa-envelope text-primary mt-1"></i>
+                            <span class="text-gray-300 text-sm">contact@future-robot.com</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa fa-clock-o text-primary mt-1"></i>
+                            <span class="text-gray-300 text-sm">周一至周五: 9:00-18:00</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-secondary/20 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm mb-4 md:mb-0">
-                    © 2025 森诺智联. 保留所有权利.
+            
+            <!-- 版权信息 -->
+            <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">
+                    &copy; 2024 森诺智联机器人技术有限公司. 保留所有权利.
                 </p>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">隐私政策</a>
-                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">服务条款</a>
-                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">网站地图</a>
+                <div class="flex gap-6">
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors text-sm">隐私政策</a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors text-sm">服务条款</a>
+                    <a href="#" class="text-gray-400 hover:text-primary transition-colors text-sm">网站地图</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- 回到顶部按钮 -->
-    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white shadow-lg opacity-0 invisible transition-all duration-300 z-50">
-        <i class="fa fa-arrow-up"></i>
+    <!-- 返回顶部按钮 - 平滑滚动到顶部 -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/20 opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+        <i class="fa fa-chevron-up"></i>
     </button>
 
+    <!-- JavaScript -->
     <script>
         // 导航栏滚动效果
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            const backToTop = document.getElementById('backToTop');
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('backToTop');
+        const navLinks = document.querySelectorAll('.nav-link'); // 所有导航链接
+        const sections = document.querySelectorAll('section[id]'); // 所有带id的区块
+        
+        // 导航高亮逻辑 - 排除"联系我们"（带no-highlight类的链接）
+        function highlightNavLink() {
+            const scrollPosition = window.scrollY + 100; // 偏移量，确保导航提前高亮
             
-            if (window.scrollY > 100) {
-                navbar.classList.add('nav-scrolled');
+            sections.forEach(section => {
+                const sectionId = section.getAttribute('id');
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                
+                // 判断当前滚动位置是否在当前区块内
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        // 排除带no-highlight类的链接（联系我们）
+                        if (link.classList.contains('no-highlight')) return;
+                        
+                        link.classList.remove('nav-active', 'text-white');
+                        link.classList.add('text-gray-300');
+                        
+                        if (link.getAttribute('data-target') === sectionId) {
+                            link.classList.add('nav-active', 'text-white');
+                            link.classList.remove('text-gray-300');
+                        }
+                    });
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', function() {
+            // 导航栏样式切换
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-dark/90', 'backdrop-blur-md', 'shadow-lg');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+                
                 backToTop.classList.remove('opacity-0', 'invisible');
                 backToTop.classList.add('opacity-100', 'visible');
             } else {
-                navbar.classList.remove('nav-scrolled');
+                navbar.classList.remove('bg-dark/90', 'backdrop-blur-md', 'shadow-lg');
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                
                 backToTop.classList.add('opacity-0', 'invisible');
                 backToTop.classList.remove('opacity-100', 'visible');
             }
+            
+            // 导航高亮（排除联系我们）
+            highlightNavLink();
+            
+            // 滚动动画
+            const animateElements = document.querySelectorAll('.animate-on-scroll');
+            animateElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
         });
-
+        
         // 移动端菜单
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
-        const mobileProductBtn = document.getElementById('mobileProductBtn');
-        const mobileProductSubmenu = document.getElementById('mobileProductSubmenu');
-
+        const mobileNavLinks = document.querySelectorAll('.nav-link'); // 移动端导航链接
+        let menuOpen = false;
+        
         menuBtn.addEventListener('click', function() {
-            if (mobileMenu.style.height === 'auto' || mobileMenu.style.height !== '0px') {
-                mobileMenu.style.height = '0px';
-                menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
-            } else {
-                mobileMenu.style.height = 'auto';
+            if (!menuOpen) {
+                mobileMenu.classList.add('block');
                 menuBtn.innerHTML = '<i class="fa fa-times"></i>';
-            }
-        });
-
-        mobileProductBtn.addEventListener('click', function() {
-            if (mobileProductSubmenu.style.height === 'auto' || mobileProductSubmenu.style.height !== '0px') {
-                mobileProductSubmenu.style.height = '0px';
-                mobileProductBtn.querySelector('i').classList.remove('rotate-180');
+                menuOpen = true;
             } else {
-                mobileProductSubmenu.style.height = 'auto';
-                mobileProductBtn.querySelector('i').classList.add('rotate-180');
+                mobileMenu.classList.remove('block');
+                menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                menuOpen = false;
             }
         });
-
-        // 回到顶部
-        document.getElementById('backToTop').addEventListener('click', function() {
+        
+        // 移动端导航链接点击后关闭菜单
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.remove('block');
+                menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                menuOpen = false;
+            });
+        });
+        
+        // 返回顶部 - 平滑滚动
+        backToTop.addEventListener('click', function() {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         });
+        
+        // 案例筛选
+        const caseFilters = document.querySelectorAll('.case-filter');
+        const caseItems = document.querySelectorAll('.case-item');
+        
+        caseFilters.forEach(filter => {
+            filter.addEventListener('click', function() {
+                // 切换筛选按钮样式
+                caseFilters.forEach(btn => {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-secondary', 'text-gray-300');
+                });
+                this.classList.remove('bg-secondary', 'text-gray-300');
+                this.classList.add('bg-primary', 'text-white');
+                
+                // 筛选案例
+                const filterValue = this.getAttribute('data-filter');
+                
+                caseItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.style.display = 'block';
+                        // 重新触发动画
+                        setTimeout(() => {
+                            item.querySelector('.animate-on-scroll').classList.remove('visible');
+                            setTimeout(() => {
+                                item.querySelector('.animate-on-scroll').classList.add('visible');
+                            }, 10);
+                        }, 100);
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // 页面加载完成后触发初始动画和导航高亮
+        window.addEventListener('load', function() {
+            // 初始导航高亮（首页）
+            highlightNavLink();
+            
+            // 触发初始可见元素的动画
+            const initialVisibleElements = document.querySelectorAll('.animate-on-scroll');
+            initialVisibleElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 200;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        });
 
-        // 平滑滚动
+        // 修复可能的滚动行为兼容性问题（针对部分浏览器）
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -925,15 +849,11 @@
                 
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
+                    // 手动实现平滑滚动，确保兼容性
                     targetElement.scrollIntoView({
-                        behavior: 'smooth'
+                        behavior: 'smooth',
+                        block: 'start'
                     });
-                    
-                    // 关闭移动端菜单
-                    if (mobileMenu.style.height === 'auto') {
-                        mobileMenu.style.height = '0px';
-                        menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
-                    }
                 }
             });
         });
