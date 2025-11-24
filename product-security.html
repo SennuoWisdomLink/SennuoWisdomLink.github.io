@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安保机器人 - 森诺智联</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        techBlue: '#165DFF', // 科技蓝主色
+                        darkBg: '#0F172A',    // 深色背景
+                        lightText: '#F1F5F9', // 浅色文本
+                        accent: '#38BDF8',    // 强调色
+                        grayTech: '#334155',  // 科技灰
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-glow {
+                text-shadow: 0 0 12px rgba(22, 93, 255, 0.4);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 30px rgba(22, 93, 255, 0.15);
+            }
+            .bg-grid {
+                background-image: linear-gradient(rgba(22, 93, 255, 0.05) 1px, transparent 1px),
+                                linear-gradient(90deg, rgba(22, 93, 255, 0.05) 1px, transparent 1px);
+                background-size: 24px 24px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-lightText font-inter antialiased">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-darkBg/95 backdrop-blur-md py-4">
+        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
+            <!-- 品牌Logo -->
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-techBlue rounded-lg flex items-center justify-center">
+                    <i class="fa fa-robot text-white text-xl"></i>
+                </div>
+                <span class="text-2xl font-bold text-white">森诺智联</span>
+            </a>
+
+            <!-- 桌面端导航 -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="index.html" class="text-gray-300 hover:text-techBlue transition-colors">首页</a>
+                <div class="relative group">
+                    <a href="products.html" class="text-techBlue font-medium flex items-center gap-1">
+                        产品中心
+                        <i class="fa fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                    </a>
+                    <div class="absolute left-0 mt-2 w-48 bg-darkBg/95 backdrop-blur-md rounded-lg shadow-xl border border-techBlue/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-10">
+                        <a href="product-security.html" class="block px-4 py-3 text-gray-300 hover:bg-techBlue/10 hover:text-techBlue transition-colors">安保机器人</a>
+                        <a href="product-inspection.html" class="block px-4 py-3 text-gray-300 hover:bg-techBlue/10 hover:text-techBlue transition-colors">巡检机器人</a>
+                        <a href="product-guide.html" class="block px-4 py-3 text-gray-300 hover:bg-techBlue/10 hover:text-techBlue transition-colors">导览机器人</a>
+                        <a href="product-cleaning.html" class="block px-4 py-3 text-gray-300 hover:bg-techBlue/10 hover:text-techBlue transition-colors">清洁机器人</a>
+                    </div>
+                </div>
+                <a href="cooperation.html" class="text-gray-300 hover:text-techBlue transition-colors">产学研合作</a>
+                <a href="cases.html" class="text-gray-300 hover:text-techBlue transition-colors">项目案例</a>
+                <a href="about.html" class="text-gray-300 hover:text-techBlue transition-colors">关于我们</a>
+                <a href="#contact" class="bg-techBlue hover:bg-techBlue/90 text-white px-6 py-2 rounded-lg transition-colors">
+                    咨询合作
+                </a>
+            </nav>
+
+            <!-- 移动端菜单按钮 -->
+            <button id="mobileMenuBtn" class="md:hidden text-white text-2xl">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="md:hidden bg-darkBg/98 backdrop-blur-md w-full absolute top-full left-0 shadow-lg h-0 overflow-hidden transition-all duration-300 border-t border-techBlue/10">
+            <div class="container mx-auto px-4 py-4 flex flex-col gap-4">
+                <a href="index.html" class="text-gray-300 hover:text-techBlue transition-colors py-2 border-b border-gray-800">首页</a>
+                <div class="border-b border-gray-800 pb-2">
+                    <button id="mobileProductBtn" class="flex justify-between items-center w-full text-gray-300 hover:text-techBlue transition-colors py-2">
+                        产品中心
+                        <i class="fa fa-chevron-down text-xs"></i>
+                    </button>
+                    <div id="mobileProductSubmenu" class="pl-4 mt-2 gap-2 flex flex-col h-0 overflow-hidden transition-all duration-300">
+                        <a href="product-security.html" class="text-gray-300 hover:text-techBlue transition-colors py-1">安保机器人</a>
+                        <a href="product-inspection.html" class="text-gray-300 hover:text-techBlue transition-colors py-1">巡检机器人</a>
+                        <a href="product-guide.html" class="text-gray-300 hover:text-techBlue transition-colors py-1">导览机器人</a>
+                        <a href="product-cleaning.html" class="text-gray-300 hover:text-techBlue transition-colors py-1">清洁机器人</a>
+                    </div>
+                </div>
+                <a href="cooperation.html" class="text-gray-300 hover:text-techBlue transition-colors py-2 border-b border-gray-800">产学研合作</a>
+                <a href="cases.html" class="text-gray-300 hover:text-techBlue transition-colors py-2 border-b border-gray-800">项目案例</a>
+                <a href="about.html" class="text-gray-300 hover:text-techBlue transition-colors py-2 border-b border-gray-800">关于我们</a>
+                <a href="#contact" class="bg-techBlue hover:bg-techBlue/90 text-white px-6 py-3 rounded-lg transition-colors text-center">咨询合作</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 头部Banner -->
+    <section class="relative h-[65vh] flex items-center overflow-hidden pt-16 bg-grid">
+        <div class="absolute inset-0 z-0">
+            <!-- 图片替换标记：[安保机器人全景应用场景图.jpg] -->
+            <img src="[安保机器人全景应用场景图.jpg]" alt="安保机器人应用场景" class="w-full h-full object-cover opacity-20">
+            <div class="absolute inset-0 bg-gradient-to-r from-darkBg/95 to-darkBg/80"></div>
+        </div>
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="max-w-3xl">
+                <h1 class="text-[clamp(2.2rem,5vw,3.5rem)] font-bold mb-4 text-glow">安保机器人</h1>
+                <p class="text-[clamp(1rem,2vw,1.25rem)] text-gray-300 mb-8 leading-relaxed">
+                    24小时智能巡逻 · 多场景自适应 · 异常实时预警<br>
+                    为住宅小区、写字楼、科技园区等提供高效、安全的智慧安保解决方案
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#specs" class="bg-techBlue hover:bg-techBlue/90 text-white px-8 py-3 rounded-lg transition-colors font-medium flex items-center justify-center gap-2">
+                        <i class="fa fa-cogs"></i> 技术参数
+                    </a>
+                    <a href="#cases" class="bg-transparent border-2 border-techBlue hover:bg-techBlue/10 text-techBlue px-8 py-3 rounded-lg transition-colors font-medium flex items-center justify-center gap-2">
+                        <i class="fa fa-file-text"></i> 查看案例
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品概述 -->
+    <section class="py-16 bg-darkBg">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">产品概述</h2>
+                <div class="w-24 h-1 bg-techBlue mx-auto mb-6"></div>
+                <p class="text-gray-400 max-w-3xl mx-auto">
+                    融合AI识别与智能导航技术，重新定义安保作业模式，助力园区智能化升级
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <!-- 图片替换标记：[安保机器人多角度展示图.jpg] -->
+                    <img src="[安保机器人多角度展示图.jpg]" alt="安保机器人展示" class="w-full h-auto rounded-xl shadow-2xl border border-techBlue/20">
+                </div>
+                <div class="space-y-6">
+                    <p class="text-gray-300 leading-relaxed">
+                        森诺智联安保机器人，主要应用于住宅小区、写字楼、别墅、科技园区等室内外场景，可协同物业安保、管理人员进行24小时巡逻执勤任务，有效提升园区安保质量及科技形象，助力园区智能化、数字化升级。
+                    </p>
+                    <p class="text-gray-300 leading-relaxed">
+                        通过智慧物业管理平台，机器人可与现有技防设备互联互通，实现智能联动、自主乘梯、远程处置等功能，降低运营成本、增强管理效能，为安保工作提供“科技+人力”的双重保障。
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center gap-3 text-techBlue">
+                            <i class="fa fa-check-circle text-xl"></i>
+                            <span>24小时不间断巡逻</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-techBlue">
+                            <i class="fa fa-check-circle text-xl"></i>
+                            <span>异常情况自动预警</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-techBlue">
+                            <i class="fa fa-check-circle text-xl"></i>
+                            <span>多设备智能联动</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-techBlue">
+                            <i class="fa fa-check-circle text-xl"></i>
+                            <span>远程喊话处置</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心功能 -->
+    <section class="py-16 bg-darkBg/80 bg-grid">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">核心功能</h2>
+                <div class="w-24 h-1 bg-techBlue mx-auto mb-6"></div>
+                <p class="text-gray-400 max-w-3xl mx-auto">
+                    从巡逻监控到应急处置，全方位覆盖安保作业全流程需求
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 功能1：巡逻执勤 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-techBlue/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa fa-map-o text-techBlue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">巡逻执勤 & 全景监控</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        适应超大区域巡逻执勤，具备自主导航规划、自主避障、自主充电等功能；巡逻过程中实时回传全景视频，支持视频存储、历史视频查询，实现无死角监控<RichMediaReference>。
+                    </p>
+                </div>
+
+                <!-- 功能2：智能识别 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-techBlue/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa fa-eye text-techBlue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">高精度异常识别</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        基于图像深度学习及人工智能技术，对人脸、入侵等异常情况有极高准确率识别能力；同时可检测未佩戴安全帽、违规作业、物品缺失、门开关状态等场景<RichMediaReference>。
+                    </p>
+                </div>
+
+                <!-- 功能3：监测预警 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-techBlue/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa fa-bell text-techBlue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">安全隐患监测预警</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        搭载烟雾探测、热源检测、环境检测、有毒有害气体探测、放射性探测等设备，检测出异常可自动预警，实时发现安全隐患，避免事故扩大化<RichMediaReference>。
+                    </p>
+                </div>
+
+                <!-- 功能4：定点执勤 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-techBlue/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa fa-flag text-techBlue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">定点执勤 & 违规拦截</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        可按照设定时间、设定位置进行定点执勤任务，替代安保人员在关键岗位临时执勤，防止人员擅自闯入、违规作业等行为，提升重点区域管控力度<RichMediaReference>。
+                    </p>
+                </div>
+
+                <!-- 功能5：远程处置 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-techBlue/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa fa-talk text-techBlue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">远程处置 & 广播宣传</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        支持对现场异常情况远程处置，提供定点巡查、远程喊话、警告威慑及现场取证等功能；同时可进行广播通知、企业政策宣传，提醒现场人员规范作业<RichMediaReference>。
+                    </p>
+                </div>
+
+                <!-- 功能6：应急呼叫 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 card-hover">
+                    <div class="w-14 h-14 bg-techBlue/10 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa fa-phone text-techBlue text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-white">一键呼救 & 智能问答</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        现场人员可咨询机器人公司相关政策，或一键呼叫后台问询、求救，建立快速响应通道；搭配智能问答功能，提升现场服务效率与人员体验<RichMediaReference>。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 技术参数 -->
+    <section id="specs" class="py-16 bg-darkBg">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">技术参数</h2>
+                <div class="w-24 h-1 bg-techBlue mx-auto mb-6"></div>
+                <p class="text-gray-400 max-w-3xl mx-auto">
+                    高性能硬件配置，为稳定运行与精准识别提供坚实基础
+                </p>
+            </div>
+
+            <div class="overflow-x-auto bg-darkBg/60 border border-techBlue/10 rounded-xl">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-techBlue/20">
+                            <th class="py-6 px-8 text-techBlue font-bold text-lg">参数类别</th>
+                            <th class="py-6 px-8 text-techBlue font-bold text-lg">具体规格</th>
+                            <th class="py-6 px-8 text-techBlue font-bold text-lg">备注</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <!-- 导航避障 -->
+                        <tr class="hover:bg-techBlue/5 transition-colors">
+                            <td class="py-6 px-8 font-medium">导航避障</td>
+                            <td class="py-6 px-8 text-gray-300">
+                                16线激光雷达 + 超声波雷达 + 3D建模环境感知<br>
+                                水平测角360°，垂直测角30°(±15°)<br>
+                                高位避障功能
+                            </td>
+                            <td class="py-6 px-8 text-gray-400">基于低速无人驾驶技术，支持无轨道导航<RichMediaReference></td>
+                        </tr>
+                        <!-- 云台配置 -->
+                        <tr class="hover:bg-techBlue/5 transition-colors">
+                            <td class="py-6 px-8 font-medium">云台系统</td>
+                            <td class="py-6 px-8 text-gray-300">
+                                可选配双目云台/单目云台<br>
+                                水平旋转：0°~348°<br>
+                                垂直旋转：-10°~+30°
+                            </td>
+                            <td class="py-6 px-8 text-gray-400">支持AI智能识别（车牌、行人、人脸等）<RichMediaReference></td>
+                        </tr>
+                        <!-- AI识别 -->
+                        <tr class="hover:bg-techBlue/5 transition-colors">
+                            <td class="py-6 px-8 font-medium">AI识别能力</td>
+                            <td class="py-6 px-8 text-gray-300">
+                                人脸/车牌/行人识别准确率 ≥98%<br>
+                                异常行为识别响应时间 ≤1s<br>
+                                支持多目标同时识别
+                            </td>
+                            <td class="py-6 px-8 text-gray-400">基于图像深度学习技术<RichMediaReference></td>
+                        </tr>
+                        <!-- 底盘性能 -->
+                        <tr class="hover:bg-techBlue/5 transition-colors">
+                            <td class="py-6 px-8 font-medium">底盘配置</td>
+                            <td class="py-6 px-8 text-gray-300">
+                                四轮两驱底盘<br>
+                                支持自主乘梯、跨层通行<br>
+                                碰撞检测传感器 + 跌落检测
+                            </td>
+                            <td class="py-6 px-8 text-gray-400">模块化设计，性能稳定可靠<RichMediaReference></td>
+                        </tr>
+                        <!-- 续航能力 -->
+                        <tr class="hover:bg-techBlue/5 transition-colors">
+                            <td class="py-6 px-8 font-medium">续航与充电</td>
+                            <td class="py-6 px-8 text-gray-300">
+                                电池容量：24V 50Ah 锂电池<br>
+                                持续工作时间：8~10小时<br>
+                                充电时间：3~4小时（快充）<br>
+                                自主回充：电量＜15%自动触发
+                            </td>
+                            <td class="py-6 px-8 text-gray-400">满足24小时轮班执勤需求</td>
+                        </tr>
+                        <!-- 环境适应 -->
+                        <tr class="hover:bg-techBlue/5 transition-colors">
+                            <td class="py-6 px-8 font-medium">环境适应</td>
+                            <td class="py-6 px-8 text-gray-300">
+                                工作温度：-20°C ~ 50°C<br>
+                                防护等级：IP54（可选IP65升级）<br>
+                                适应地形：平地、缓坡（≤15°）、石子路
+                            </td>
+                            <td class="py-6 px-8 text-gray-400">适配室内外多场景使用</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 应用场景 -->
+    <section class="py-16 bg-darkBg/80 bg-grid">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">应用场景</h2>
+                <div class="w-24 h-1 bg-techBlue mx-auto mb-6"></div>
+                <p class="text-gray-400 max-w-3xl mx-auto">
+                    广泛适配各类室内外场景，为不同领域提供定制化安保解决方案
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- 场景1：住宅小区 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl overflow-hidden card-hover">
+                    <!-- 图片替换标记：[安保机器人住宅小区应用图.jpg] -->
+                    <img src="[安保机器人住宅小区应用图.jpg]" alt="住宅小区应用" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">住宅小区</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            负责社区公共区域巡逻、陌生人识别、高空抛物监测、消防通道占用预警，提升居民安全感<RichMediaReference>。
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">24小时巡逻</span>
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">陌生人识别</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景2：写字楼 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl overflow-hidden card-hover">
+                    <!-- 图片替换标记：[安保机器人写字楼应用图.jpg] -->
+                    <img src="[安保机器人写字楼应用图.jpg]" alt="写字楼应用" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">写字楼</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            管控电梯使用权限、监测消防设施状态、夜间无人区域巡逻，保障办公环境安全<RichMediaReference>。
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">电梯联动</span>
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">设施监测</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景3：科技园区 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl overflow-hidden card-hover">
+                    <!-- 图片替换标记：[安保机器人科技园区应用图.jpg] -->
+                    <img src="[安保机器人科技园区应用图.jpg]" alt="科技园区应用" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">科技园区</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            覆盖园区多栋楼宇巡逻、研发区域准入管控、室外设施安全监测，适配大区域安保需求<RichMediaReference>。
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">跨区巡逻</span>
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">准入管控</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 场景4：机场/车站 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl overflow-hidden card-hover">
+                    <!-- 图片替换标记：[安保机器人机场应用图.jpg] -->
+                    <img src="[安保机器人机场应用图.jpg]" alt="机场/车站应用" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-3 text-white">机场/车站</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            协助旅客引导、重点区域安防、异常行为预警，同时提供业务咨询，提升公共交通枢纽服务与安全水平<RichMediaReference>。
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">旅客引导</span>
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">异常预警</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客户案例 -->
+    <section id="cases" class="py-16 bg-darkBg">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">客户案例</h2>
+                <div class="w-24 h-1 bg-techBlue mx-auto mb-6"></div>
+                <p class="text-gray-400 max-w-3xl mx-auto">
+                    已在多个领域落地应用，为客户创造显著的安全价值与管理效率提升
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- 案例1：某机场安保机器人项目 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl overflow-hidden card-hover">
+                    <!-- 图片替换标记：[某机场安保机器人项目图.jpg] -->
+                    <img src="[某机场安保机器人项目图.jpg]" alt="某机场安保机器人项目" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">机场领域</span>
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">已落地</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-white">某机场安保机器人项目</h3>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            为机场航站楼及室外区域提供全方位安保服务，集成业务咨询、地图指引、广告播放等附加功能，实现“安保+服务”双价值输出<RichMediaReference>。
+                        </p>
+                        <ul class="text-gray-400 space-y-2 mb-6">
+                            <li class="flex items-center gap-2">
+                                <i class="fa fa-check text-techBlue"></i>
+                                <span>为游客提供登机、托运、安检等业务咨询<RichMediaReference></span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa fa-check text-techBlue"></i>
+                                <span>提供机场平面图，引导旅客路线<RichMediaReference></span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa fa-check text-techBlue"></i>
+                                <span>播放音视频广告，拓展传媒业务<RichMediaReference></span>
+                            </li>
+                        </ul>
+                        <a href="case-airport.html" class="inline-flex items-center text-techBlue hover:text-techBlue/80 font-medium">
+                            查看完整案例 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 案例2：陕西某园区综合巡维项目 -->
+                <div class="bg-darkBg/60 border border-techBlue/10 rounded-xl overflow-hidden card-hover">
+                    <!-- 图片替换标记：[陕西某园区综合巡维项目图.jpg] -->
+                    <img src="[陕西某园区综合巡维项目图.jpg]" alt="陕西某园区综合巡维项目" class="w-full h-64 object-cover">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">园区领域</span>
+                            <span class="bg-techBlue/10 text-techBlue text-xs px-3 py-1 rounded-full">已落地</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 text-white">陕西某园区综合巡维项目</h3>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            以5D数字孪生技术为核心，结合安保机器人实现园区全局态势掌控，覆盖消防电梯、垃圾桶满溢、机动车违规停放等多类巡检场景，提升园区管理智能化水平<RichMediaReference>。
+                        </p>
+                        <ul class="text-gray-400 space-y-2 mb-6">
+                            <li class="flex items-center gap-2">
+                                <i class="fa fa-check text-techBlue"></i>
+                                <span>实时监控园区设备、人员、车辆状态<RichMediaReference></span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa fa-check text-techBlue"></i>
+                                <span>自动识别消防通道占用、防火门异常<RichMediaReference></span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa fa-check text-techBlue"></i>
+                                <span>联动指挥中心，实现异常情况快速处置</span>
+                            </li>
+                        </ul>
+                        <a href="case-park.html" class="inline-flex items-center text-techBlue hover:text-techBlue/80 font-medium">
+                            查看完整案例 <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 咨询模块 -->
+    <section id="contact" class="py-16 bg-darkBg/80 bg-grid">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="max-w-4xl mx-auto bg-darkBg/60 border border-techBlue/10 rounded-xl p-8 md:p-12">
+                <div class="text-center mb-10">
+                    <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">咨询安保机器人方案</h2>
+                    <div class="w-24 h-1 bg-techBlue mx-auto mb-6"></div>
+                    <p class="text-gray-400 max-w-2xl mx-auto">
+                        填写以下表单，我们的技术顾问将在1个工作日内与您联系，为您提供定制化解决方案与报价
+                    </p>
+                </div>
+
+                <form class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-gray-300 mb-2 text-sm">联系人姓名</label>
+                            <input type="text" id="name" class="w-full bg-darkBg/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-techBlue transition-colors" placeholder="请输入您的姓名">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-gray-300 mb-2 text-sm">联系电话</label>
+                            <input type="tel" id="phone" class="w-full bg-darkBg/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-techBlue transition-colors" placeholder="请输入您的手机号">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="company" class="block text-gray-300 mb-2 text-sm">所属企业/单位</label>
+                        <input type="text" id="company" class="w-full bg-darkBg/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-techBlue transition-colors" placeholder="请输入企业/单位名称">
+                    </div>
+                    <div>
+                        <label for="scene" class="block text-gray-300 mb-2 text-sm">应用场景</label>
+                        <select id="scene" class="w-full bg-darkBg/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-techBlue transition-colors">
+                            <option value="" disabled selected>请选择应用场景</option>
+                            <option value="residential">住宅小区</option>
+                            <option value="office">写字楼</option>
+                            <option value="park">科技园区</option>
+                            <option value="airport">机场/车站</option>
+                            <option value="other">其他场景</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="demand" class="block text-gray-300 mb-2 text-sm">具体需求描述</label>
+                        <textarea id="demand" rows="4" class="w-full bg-darkBg/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-techBlue transition-colors" placeholder="请描述您的具体需求，如部署区域、功能偏好等"></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="w-full md:w-auto bg-techBlue hover:bg-techBlue/90 text-white px-10 py-3 rounded-lg transition-colors font-medium text-lg">
+                            提交咨询
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-10 text-center text-gray-400 text-sm">
+                    <p>或直接联系我们：</p>
+                    <p class="mt-2">营销部电话：<a href="tel:13147858806" class="text-techBlue hover:underline">13147858806</a> <RichMediaReference></p>
+                    <p class="mt-1">公司地址：辽宁省大连高新技术产业园区黄浦路533号海创国际产业大厦30层02单元 <RichMediaReference></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-darkBg border-t border-techBlue/10 py-12">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="grid md:grid-cols-4 gap-10 mb-10">
+                <!-- 品牌信息 -->
+                <div>
+                    <a href="index.html" class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-techBlue rounded-lg flex items-center justify-center">
+                            <i class="fa fa-robot text-white text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">森诺智联</span>
+                    </a>
+                    <p class="text-gray-400 mb-6 text-sm leading-relaxed">
+                        专注于智能机器人研发与应用的高新技术企业，深耕工业与农业智能化领域，以“技术创新驱动产业升级”为核心使命 <RichMediaReference>。
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 bg-darkBg/50 border border-techBlue/10 rounded-full flex items-center justify-center text-gray-400 hover:text-techBlue hover:border-techBlue transition-colors">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-darkBg/50 border border-techBlue/10 rounded-full flex items-center justify-center text-gray-400 hover:text-techBlue hover:border-techBlue transition-colors">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-darkBg/50 border border-techBlue/10 rounded-full flex items-center justify-center text-gray-400 hover:text-techBlue hover:border-techBlue transition-colors">
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 快速链接 -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-techBlue">快速链接</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="index.html" class="text-gray-400 hover:text-techBlue transition-colors">首页</a></li>
+                        <li><a href="products.html" class="text-gray-400 hover:text-techBlue transition-colors">产品中心</a></li>
+                        <li><a href="cooperation.html" class="text-gray-400 hover:text-techBlue transition-colors">产学研合作</a></li>
+                        <li><a href="cases.html" class="text-gray-400 hover:text-techBlue transition-colors">项目案例</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-techBlue transition-colors">关于我们</a></li>
+                        <li><a href="contact.html" class="text-gray-400 hover:text-techBlue transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+
+                <!-- 产品系列 -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-techBlue">产品系列</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li><a href="product-security.html" class="text-gray-400 hover:text-techBlue transition-colors">安保机器人</a></li>
+                        <li><a href="product-inspection.html" class="text-gray-400 hover:text-techBlue transition-colors">巡检机器人</a></li>
+                        <li><a href="product-guide.html" class="text-gray-400 hover:text-techBlue transition-colors">导览机器人</a></li>
+                        <li><a href="product-cleaning.html" class="text-gray-400 hover:text-techBlue transition-colors">清洁机器人</a></li>
+                        <li><a href="product-picking.html" class="text-gray-400 hover:text-techBlue transition-colors">水果采摘机器人</a></li>
+                        <li><a href="product-data.html" class="text-gray-400 hover:text-techBlue transition-colors">数据分析系统</a></li>
+                    </ul>
+                </div>
+
+                <!-- 联系信息 -->
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-techBlue">联系我们</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fa fa-map-marker text-techBlue mt-1"></i>
+                            <span>辽宁省大连高新技术产业园区黄浦路533号海创国际产业大厦30层02单元 <RichMediaReference></span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa fa-phone text-techBlue"></i>
+                            <span>13147858806（营销部） <RichMediaReference></span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa fa-envelope text-techBlue"></i>
+                            <span>contact@sennuowisdomlink.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-techBlue/10 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    © 2025 森诺智联嘉(大连)高新产业技术研究有限公司. 保留所有权利. <RichMediaReference>
+                </p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">隐私政策</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">服务条款</a>
+                    <a href="#" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">网站地图</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-techBlue rounded-full flex items-center justify-center text-white shadow-lg opacity-0 invisible transition-all duration-300 z-50">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <!-- 脚本 -->
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('backToTop');
+            
+            if (window.scrollY > 100) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // 移动端菜单
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileProductBtn = document.getElementById('mobileProductBtn');
+        const mobileProductSubmenu = document.getElementById('mobileProductSubmenu');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            if (mobileMenu.style.height === 'auto' || mobileMenu.style.height !== '0px') {
+                mobileMenu.style.height = '0px';
+                mobileMenuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+            } else {
+                mobileMenu.style.height = 'auto';
+                mobileMenuBtn.innerHTML = '<i class="fa fa-times"></i>';
+            }
+        });
+
+        mobileProductBtn.addEventListener('click', function() {
+            if (mobileProductSubmenu.style.height === 'auto' || mobileProductSubmenu.style.height !== '0px') {
+                mobileProductSubmenu.style.height = '0px';
+                mobileProductBtn.querySelector('i').classList.remove('rotate-180');
+            } else {
+                mobileProductSubmenu.style.height = 'auto';
+                mobileProductBtn.querySelector('i').classList.add('rotate-180');
+            }
+        });
+
+        // 回到顶部
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // 关闭移动端菜单
+                    if (mobileMenu.style.height === 'auto') {
+                        mobileMenu.style.height = '0px';
+                        mobileMenuBtn.innerHTML = '<i class="fa fa-bars"></i>';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
