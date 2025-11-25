@@ -15,14 +15,13 @@
             theme: {
                 extend: {
                     colors: {
-                        // 科技感主色调
-                        primary: '#0EA5E9', // 亮蓝色
-                        secondary: '#1E293B', // 深灰蓝
-                        dark: '#0F172A', // 近黑色
-                        accent: '#22D3EE', // 青色点缀
-                        light: '#F8FAFC', // 浅灰色文本
-                        success: '#10B981', // 成功色
-                        error: '#EF4444' // 错误色
+                        primary: '#0EA5E9',
+                        secondary: '#1E293B',
+                        dark: '#0F172A',
+                        accent: '#22D3EE',
+                        light: '#F8FAFC',
+                        success: '#10B981',
+                        error: '#EF4444'
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
@@ -190,7 +189,7 @@
             .qrcode-border {
                 position: relative;
                 padding: 0.5rem;
-                background: linear-gradient(45deg, #0EA5E9, #22D3EE, #0EA5E9);
+                background: linear-gradient(45deg, #0EA5E9, #22D3EE);
                 border-radius: 1rem;
                 box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
             }
@@ -207,15 +206,14 @@
     
     <!-- 基础样式 -->
     <style>
-        /* 导入字体 */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            scroll-behavior: smooth !important; /* 强制全局平滑滚动，确保所有跳转都有效果 */
+            scroll-behavior: smooth !important;
+            padding-top: 80px; /* 为固定导航栏预留空间，避免内容被遮挡 */
         }
         
-        /* 滚动条美化 */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -231,7 +229,6 @@
             background: #0284C7;
         }
         
-        /* 元素初始状态（用于动画） */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -242,31 +239,27 @@
             transform: translateY(0);
         }
 
-        /* 解决固定导航栏遮挡问题 - 所有模块统一设置 */
         section {
-            scroll-margin-top: 90px; /* 适配导航栏高度，确保跳转后模块顶部不被遮挡 */
+            scroll-margin-top: 90px; /* 滚动定位时预留导航栏高度 */
         }
 
-        /* 联系我们按钮特殊样式（不继承导航高亮） */
         .nav-link.no-highlight {
             position: relative !important;
         }
         .nav-link.no-highlight::after {
-            display: none !important; /* 隐藏下划线 */
+            display: none !important;
         }
         .nav-link.no-highlight.nav-active {
-            color: white !important; /* 保持按钮原有白色文字 */
-            font-weight: 500 !important; /* 恢复默认字重 */
+            color: white !important;
+            font-weight: 500 !important;
         }
         
-        /* 微信图标容器相对定位 */
         .wechat-icon-wrapper {
             position: relative;
             cursor: pointer;
             z-index: 101;
         }
         
-        /* 二维码角落装饰 */
         .qrcode-corner {
             position: absolute;
             width: 16px;
@@ -302,24 +295,47 @@
             border-top: none;
             border-radius: 0 0 4px 0;
         }
+
+        /* 导航栏固定样式强化 - 确保始终固定在顶部 */
+        #navbar {
+            position: fixed !important; /* 强制固定定位 */
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 1000 !important; /* 提高层级，避免被遮挡 */
+            width: 100% !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* 移动端菜单修复：强制显示层级与样式 */
+        #mobileMenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 999; /* 最高层级，避免被遮挡 */
+            width: 100%;
+            background: #1E293B; /* 不透明背景，确保内容可见 */
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 
 <body class="bg-dark text-light antialiased">
-    <!-- 导航栏 -->
-    <header id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <!-- 导航栏 - 强化固定定位 -->
+    <header id="navbar" class="bg-transparent">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <!-- Logo -->
                 <a href="#home" class="flex items-center space-x-2">
-                    <!-- 替换为公司实际Logo -->
                     <div class="w-10 h-10">
                         <img src="./images/logo.png" alt="森诺智联Logo" class="w-full h-full object-contain">
                     </div>
                     <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">森诺智联+</span>
                 </a>
                 
-                <!-- 桌面端导航 - 给"联系我们"添加no-highlight类，排除高亮 -->
+                <!-- 桌面端导航 -->
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="#home" data-target="home" class="text-white font-medium hover:text-primary transition-colors nav-link">首页</a>
                     <a href="#about" data-target="about" class="text-gray-300 font-medium hover:text-primary transition-colors nav-link">关于我们</a>
@@ -331,19 +347,19 @@
                 </nav>
                 
                 <!-- 移动端汉堡菜单 -->
-                <button id="menuBtn" class="md:hidden text-white text-2xl focus:outline-none">
+                <button id="menuBtn" class="md:hidden text-white text-2xl focus:outline-none cursor-pointer">
                     <i class="fa fa-bars"></i>
                 </button>
             </div>
         </div>
         
-        <!-- 移动端导航菜单 - 给"联系我们"添加no-highlight类 -->
-        <div id="mobileMenu" class="md:hidden bg-secondary/95 backdrop-filter blur-2xl hidden">
-            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
-                <a href="#home" data-target="home" class="text-white font-medium py-2 border-b border-gray-700 nav-link">首页</a>
-                <a href="#about" data-target="about" class="text-gray-300 font-medium py-2 border-b border-gray-700 hover:text-primary transition-colors nav-link">关于我们</a>
-                <a href="#products" data-target="products" class="text-gray-300 font-medium py-2 border-b border-gray-700 hover:text-primary transition-colors nav-link">产品中心</a>
-                <a href="#cases" data-target="cases" class="text-gray-300 font-medium py-2 border-b border-gray-700 hover:text-primary transition-colors nav-link">案例展示</a>
+        <!-- 移动端导航菜单：确保内容完整显示 -->
+        <div id="mobileMenu" class="md:hidden hidden">
+            <div class="container mx-auto flex flex-col space-y-5">
+                <a href="#home" data-target="home" class="text-white font-medium py-3 border-b border-gray-700 nav-link">首页</a>
+                <a href="#about" data-target="about" class="text-gray-300 font-medium py-3 border-b border-gray-700 hover:text-primary transition-colors nav-link">关于我们</a>
+                <a href="#products" data-target="products" class="text-gray-300 font-medium py-3 border-b border-gray-700 hover:text-primary transition-colors nav-link">产品中心</a>
+                <a href="#cases" data-target="cases" class="text-gray-300 font-medium py-3 border-b border-gray-700 hover:text-primary transition-colors nav-link">案例展示</a>
                 <a href="#contact" data-target="contact" class="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium text-center transition-all nav-link no-highlight">
                     联系我们
                 </a>
@@ -353,13 +369,11 @@
 
     <main>
         <!-- Hero区 - home模块 -->
-        <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
-            <!-- 背景图（替换为公司机器人相关图片） -->
+        <section id="home" class="relative h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 z-0">
                 <img src="./images/index_bg.png" alt="智能机器人背景" class="w-full h-full object-cover opacity-30">
                 <div class="absolute inset-0 bg-gradient-to-b from-dark/30 to-dark"></div>
             </div>            
-            <!-- Hero内容 -->
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
                 <div class="animate-fade-in">
                     <h1 class="text-[clamp(2.5rem,6vw,4rem)] font-bold leading-tight text-shadow-lg mb-6">
@@ -370,7 +384,6 @@
                         专注于工业级智能机器人研发与应用，提供从核心技术到整体解决方案的全链条服务，助力企业实现自动化升级与数字化转型。
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-                        <!-- 确保按钮跳转也有滚动效果 -->
                         <a href="#products" class="px-8 py-3 bg-primary hover:bg-primary/90 text-white rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
                             探索产品 <i class="fa fa-arrow-right ml-2"></i>
                         </a>
@@ -379,16 +392,12 @@
                         </a>
                     </div>
                 </div>
-                
-                <!-- 滚动提示 - 跳转至about模块 -->
                 <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
                     <a href="#about" class="text-white/60 hover:text-white transition-colors">
                         <i class="fa fa-chevron-down text-2xl"></i>
                     </a>
                 </div>
             </div>
-            
-            <!-- 装饰元素 -->
             <div class="absolute top-1/4 right-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl animate-float"></div>
             <div class="absolute bottom-1/3 left-10 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-float" style="animation-delay: 2s"></div>
         </section>
@@ -397,16 +406,12 @@
         <section id="about" class="py-20 bg-secondary">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col lg:flex-row items-center gap-12">
-                    <!-- 左侧图片 -->
                     <div class="lg:w-1/2 animate-on-scroll">
                         <div class="relative rounded-xl overflow-hidden shadow-2xl">
-                            <!-- 替换为公司环境/团队图片 -->
                             <img src="./images/company_bg.png" alt="公司环境" class="w-full h-auto rounded-xl">
                             <div class="absolute inset-0 bg-gradient-to-t from-secondary to-transparent opacity-60"></div>
                         </div>
                     </div>
-                    
-                    <!-- 右侧内容 -->
                     <div class="lg:w-1/2 animate-on-scroll">
                         <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                             以<span class="text-primary">技术创新</span>驱动，<br>
@@ -426,7 +431,6 @@
         <!-- 核心产品 - products模块 -->
         <section id="products" class="py-20 bg-dark">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- 标题栏 -->
                 <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
                     <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                         多元化<span class="text-primary">机器人产品矩阵</span>
@@ -435,13 +439,9 @@
                         针对不同行业场景需求，研发覆盖便民服务、商业表演、科学教育的全系列智能机器人产品，提供灵活可靠的自动化解决方案。
                     </p>
                 </div>
-                
-                <!-- 产品卡片 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- 产品1 -->
                     <div class="group bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll">
                         <div class="relative h-60 overflow-hidden">
-                            <!-- 替换为产品图片 -->
                             <img src="https://picsum.photos/id/96/600/400" alt="工业协作机器人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             <div class="absolute top-4 left-4 px-3 py-1 bg-primary text-white text-xs font-medium rounded-full">
                                 服务系列
@@ -457,18 +457,14 @@
                                     <span><i class="fa fa-cogs mr-1"></i> 多轴联动</span>
                                     <span><i class="fa fa-eye mr-1"></i> 视觉定位</span>
                                 </div>
-                                <!-- 确保产品详情跳转也有滚动效果 -->
                                 <a href="#products" class="text-primary font-medium hover:text-primary/80 transition-colors">
                                     查看详情 <i class="fa fa-angle-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 产品2 -->
                     <div class="group bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.1s">
                         <div class="relative h-60 overflow-hidden">
-                            <!-- 替换为产品图片 -->
                             <img src="https://picsum.photos/id/42/600/400" alt="AGV移动机器人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             <div class="absolute top-4 left-4 px-3 py-1 bg-accent text-dark text-xs font-medium rounded-full">
                                 表演系列
@@ -490,11 +486,8 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 产品3 -->
                     <div class="group bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.2s">
                         <div class="relative h-60 overflow-hidden">
-                            <!-- 替换为产品图片 -->
                             <img src="https://picsum.photos/id/60/600/400" alt="服务机器人" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             <div class="absolute top-4 left-4 px-3 py-1 bg-purple-500 text-white text-xs font-medium rounded-full">
                                 教育系列
@@ -517,8 +510,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- 查看更多产品 - 确保跳转有滚动效果 -->
                 <div class="text-center mt-12 animate-on-scroll">
                     <a href="#products" class="inline-block px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-semibold transition-all duration-300">
                         查看全部产品 <i class="fa fa-arrow-right ml-2"></i>
@@ -529,7 +520,6 @@
         <!-- 案例展示 - cases模块 -->
         <section id="cases" class="py-20 bg-dark">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- 标题栏 -->
                 <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
                     <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                         赋能<span class="text-primary">各行业</span>客户价值提升
@@ -538,7 +528,6 @@
                         已为汽车、电子、物流、医疗等多个行业的知名企业提供智能机器人解决方案，获得客户高度认可
                     </p>
                 </div>
-                <!-- 案例筛选 -->
                 <div class="flex flex-wrap justify-center gap-4 mb-12 animate-on-scroll">
                     <button class="case-filter px-5 py-2 rounded-full bg-primary text-white text-sm font-medium" data-filter="all">全部案例</button>
                     <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="automotive">汽车制造</button>
@@ -546,14 +535,10 @@
                     <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="logistics">物流仓储</button>
                     <button class="case-filter px-5 py-2 rounded-full bg-secondary text-gray-300 text-sm font-medium hover:bg-secondary/80 transition-colors" data-filter="medical">医疗健康</button>
                 </div>
-                
-                <!-- 案例卡片 -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- 案例1 -->
                     <div class="case-item group" data-category="automotive">
                         <div class="bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll">
                             <div class="relative h-56 overflow-hidden">
-                                <!-- 替换为案例图片 -->
                                 <img src="https://picsum.photos/id/111/600/350" alt="汽车零部件装配案例" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 <div class="absolute inset-0 gradient-overlay"></div>
                                 <div class="absolute bottom-4 left-4 px-3 py-1 bg-primary/80 text-white text-xs font-medium rounded-full">
@@ -565,19 +550,15 @@
                                 <p class="text-gray-300 text-sm mb-4 leading-relaxed">
                                     为某知名汽车制造商提供12台协作机器人，实现发动机零部件自动化装配，生产效率提升35%，不良率降低60%
                                 </p>
-                                <!-- 案例详情跳转 -->
                                 <a href="#cases" class="text-primary font-medium hover:text-primary/80 transition-colors text-sm">
                                     查看案例详情 <i class="fa fa-angle-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 案例2 -->
                     <div class="case-item group" data-category="electronics">
                         <div class="bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.1s">
                             <div class="relative h-56 overflow-hidden">
-                                <!-- 替换为案例图片 -->
                                 <img src="https://picsum.photos/id/160/600/350" alt="电子设备检测案例" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 <div class="absolute inset-0 gradient-overlay"></div>
                                 <div class="absolute bottom-4 left-4 px-3 py-1 bg-accent/80 text-dark text-xs font-medium rounded-full">
@@ -595,12 +576,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 案例3 -->
                     <div class="case-item group" data-category="logistics">
                         <div class="bg-secondary/50 rounded-xl overflow-hidden shadow-lg hover:shadow-primary/10 transition-all duration-300 transform hover:-translate-y-2 animate-on-scroll" style="transition-delay: 0.2s">
                             <div class="relative h-56 overflow-hidden">
-                                <!-- 替换为案例图片 -->
                                 <img src="https://picsum.photos/id/180/600/350" alt="智能仓储案例" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 <div class="absolute inset-0 gradient-overlay"></div>
                                 <div class="absolute bottom-4 left-4 px-3 py-1 bg-purple-500/80 text-white text-xs font-medium rounded-full">
@@ -619,7 +597,6 @@
                         </div>
                     </div>
                 </div>      
-                <!-- 查看更多案例 -->
                 <div class="text-center mt-12 animate-on-scroll">
                     <a href="#cases" class="inline-block px-8 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-semibold transition-all duration-300">
                         查看全部案例 <i class="fa fa-arrow-right ml-2"></i>
@@ -639,9 +616,7 @@
                         无论您是需要产品咨询、方案定制还是技术支持，我们的团队都将为您提供专业、高效的服务
                     </p>
                 </div>
-                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <!-- 联系信息 -->
                     <div class="animate-on-scroll">
                         <div class="bg-dark/50 rounded-xl p-8 shadow-lg">
                             <h3 class="text-2xl font-bold mb-8">联系方式</h3>
@@ -683,26 +658,19 @@
                                     </div>
                                 </li>
                             </ul>
-                            
-                            <!-- 社交媒体 -->
                             <div class="mt-10">
                                 <h4 class="text-white font-semibold mb-4">关注我们</h4>
                                 <div class="flex gap-4">
-                                    <!-- 联系我们模块的微信图标 - 现在也在上方显示 -->
                                     <div class="wechat-icon-wrapper" id="wechatContact">
                                         <a href="javascript:;" class="w-14 h-14 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors wechat-icon-hover">
                                             <i class="fa fa-weixin text-2xl"></i>
                                         </a>
-                                        <!-- 二维码容器 - 上方显示（修改重点） -->
                                         <div class="qrcode-container" style="bottom: 100%; left: 50%; margin-bottom: 1rem; width: 280px;">
                                             <div class="qrcode-border relative">
-                                                <!-- 角落装饰 -->
                                                 <div class="qrcode-corner top-left"></div>
                                                 <div class="qrcode-corner top-right"></div>
                                                 <div class="qrcode-corner bottom-left"></div>
                                                 <div class="qrcode-corner bottom-right"></div>
-                                                
-                                                <!-- 二维码图片 - 增大尺寸 -->
                                                 <img src="./images/weixin.png" alt="微信二维码" class="w-64 h-64 object-contain">
                                             </div>
                                             <div class="qrcode-title mt-2">扫码添加微信咨询</div>
@@ -712,8 +680,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 联系表单 -->
                     <div class="animate-on-scroll">
                         <div class="bg-dark/50 rounded-xl p-8 shadow-lg">
                             <h3 class="text-2xl font-bold mb-8">发送咨询</h3>
@@ -762,16 +728,13 @@
         </section>
     </main>
 
-    <!-- 提交成功提示框 -->
     <div id="successToast" class="success-toast">
         <i class="fa fa-check-circle mr-2"></i> 咨询提交成功！我们将尽快与您联系
     </div>
 
-    <!-- 页脚 -->
     <footer class="bg-dark py-12 border-t border-white/5">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                <!-- 公司信息 -->
                 <div>
                     <a href="#home" class="flex items-center space-x-2 mb-6">
                     <div class="w-10 h-10">
@@ -783,34 +746,23 @@
                         专注智能机器人研发与应用，为全球客户提供高品质的自动化解决方案，推动产业智能化升级
                     </p>
                     <div class="flex gap-4">
-                        <!-- 页脚的微信图标 - 保持上方显示 -->
                         <div class="wechat-icon-wrapper" id="wechatFooter">
                             <a href="javascript:;" class="w-12 h-12 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-lg wechat-icon-hover">
                                 <i class="fa fa-weixin"></i>
                             </a>
-                            <!-- 二维码容器 - 上方显示 -->
                             <div class="qrcode-container" style="bottom: 100%; left: 50%; margin-bottom: 1rem; width: 260px;">
                                 <div class="qrcode-border relative">
-                                    <!-- 角落装饰 -->
                                     <div class="qrcode-corner top-left"></div>
                                     <div class="qrcode-corner top-right"></div>
                                     <div class="qrcode-corner bottom-left"></div>
                                     <div class="qrcode-corner bottom-right"></div>
-                                    
-                                    <!-- 二维码图片 - 增大尺寸 -->
                                     <img src="./images/weixin.png" alt="微信二维码" class="w-60 h-60 object-contain">
                                 </div>
                                 <div class="qrcode-title mt-2">扫码关注公众号</div>
                             </div>
                         </div>
-                        <!-- <a href="#" class="w-12 h-12 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-lg wechat-icon-hover">
-                            <i class="fa fa-weibo"></i>
-                        </a>  -->
-                       
                     </div>
                 </div>
-                
-                <!-- 快速链接 - 确保所有跳转都有滚动效果 -->
                 <div>
                     <h4 class="text-white font-bold text-lg mb-6">快速链接</h4>
                     <ul class="space-y-4">
@@ -821,8 +773,6 @@
                         <li><a href="#contact" class="text-gray-300 hover:text-primary transition-colors text-sm">联系我们</a></li>
                     </ul>
                 </div>
-                
-                <!-- 产品系列 -->
                 <div>
                     <h4 class="text-white font-bold text-lg mb-6">产品系列</h4>
                     <ul class="space-y-4">
@@ -833,8 +783,6 @@
                         <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">机器视觉系统</a></li>
                     </ul>
                 </div>
-                
-                <!-- 联系信息 -->
                 <div>
                     <h4 class="text-white font-bold text-lg mb-6">联系我们</h4>
                     <ul class="space-y-4">
@@ -857,8 +805,6 @@
                     </ul>
                 </div>
             </div>
-            
-            <!-- 版权信息 -->
             <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-gray-400 text-sm mb-4 md:mb-0">
                     &copy; 2024 森诺智联机器人技术有限公司. 保留所有权利.
@@ -872,32 +818,44 @@
         </div>
     </footer>
 
-    <!-- 返回顶部按钮 - 平滑滚动到顶部 -->
-    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/20 opacity-0 invisible transition-all duration-300 hover:bg-primary/90">
+    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-lg shadow-primary/20 opacity-0 invisible transition-all duration-300 hover:bg-primary/90 z-999">
         <i class="fa fa-chevron-up"></i>
     </button>
 
-    <!-- JavaScript -->
     <script>
-        // 导航栏滚动效果
+        // 导航栏滚动效果 - 优化固定定位逻辑
         const navbar = document.getElementById('navbar');
         const backToTop = document.getElementById('backToTop');
-        const navLinks = document.querySelectorAll('.nav-link'); // 所有导航链接
-        const sections = document.querySelectorAll('section[id]'); // 所有带id的区块
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section[id]');
         
-        // 导航高亮逻辑 - 排除"联系我们"（带no-highlight类的链接）
+        // 初始化导航栏样式，确保页面加载时就是固定状态
+        window.addEventListener('DOMContentLoaded', function() {
+            navbar.classList.add('fixed', 'top-0', 'left-0', 'right-0', 'z-1000');
+            highlightNavLink();
+            initWechatQrcode();
+            
+            const initialVisibleElements = document.querySelectorAll('.animate-on-scroll');
+            initialVisibleElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 200;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        });
+        
         function highlightNavLink() {
-            const scrollPosition = window.scrollY + 100; // 偏移量，确保导航提前高亮
+            const scrollPosition = window.scrollY + 100;
             
             sections.forEach(section => {
                 const sectionId = section.getAttribute('id');
                 const sectionTop = section.offsetTop - 100;
                 const sectionHeight = section.offsetHeight;
                 
-                // 判断当前滚动位置是否在当前区块内
                 if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
                     navLinks.forEach(link => {
-                        // 排除带no-highlight类的链接（联系我们）
                         if (link.classList.contains('no-highlight')) return;
                         
                         link.classList.remove('nav-active', 'text-white');
@@ -913,7 +871,9 @@
         }
         
         window.addEventListener('scroll', function() {
-            // 导航栏样式切换
+            // 强制保持固定定位，防止样式丢失
+            navbar.classList.add('fixed', 'top-0', 'left-0', 'right-0', 'z-1000');
+            
             if (window.scrollY > 50) {
                 navbar.classList.add('bg-dark/90', 'backdrop-blur-md', 'shadow-lg');
                 navbar.classList.remove('py-4');
@@ -930,10 +890,8 @@
                 backToTop.classList.remove('opacity-100', 'visible');
             }
             
-            // 导航高亮（排除联系我们）
             highlightNavLink();
             
-            // 滚动动画
             const animateElements = document.querySelectorAll('.animate-on-scroll');
             animateElements.forEach(element => {
                 const elementTop = element.getBoundingClientRect().top;
@@ -945,34 +903,39 @@
             });
         });
         
-        // 移动端菜单
+        // 移动端菜单：确保显示/隐藏逻辑准确
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
-        const mobileNavLinks = document.querySelectorAll('.nav-link'); // 移动端导航链接
+        const mobileNavLinks = document.querySelectorAll('.nav-link');
         let menuOpen = false;
         
         menuBtn.addEventListener('click', function() {
             if (!menuOpen) {
+                mobileMenu.classList.remove('hidden');
                 mobileMenu.classList.add('block');
                 menuBtn.innerHTML = '<i class="fa fa-times"></i>';
                 menuOpen = true;
             } else {
+                mobileMenu.classList.add('hidden');
                 mobileMenu.classList.remove('block');
                 menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
                 menuOpen = false;
             }
         });
         
-        // 移动端导航链接点击后关闭菜单
+        // 点击菜单链接后关闭菜单，同时保持导航栏固定
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', function() {
+                mobileMenu.classList.add('hidden');
                 mobileMenu.classList.remove('block');
                 menuBtn.innerHTML = '<i class="fa fa-bars"></i>';
                 menuOpen = false;
+                // 确保导航栏依然固定
+                navbar.classList.add('fixed', 'top-0', 'left-0', 'right-0', 'z-1000');
             });
         });
         
-        // 返回顶部 - 平滑滚动
+        // 返回顶部
         backToTop.addEventListener('click', function() {
             window.scrollTo({
                 top: 0,
@@ -986,7 +949,6 @@
         
         caseFilters.forEach(filter => {
             filter.addEventListener('click', function() {
-                // 切换筛选按钮样式
                 caseFilters.forEach(btn => {
                     btn.classList.remove('bg-primary', 'text-white');
                     btn.classList.add('bg-secondary', 'text-gray-300');
@@ -994,13 +956,11 @@
                 this.classList.remove('bg-secondary', 'text-gray-300');
                 this.classList.add('bg-primary', 'text-white');
                 
-                // 筛选案例
                 const filterValue = this.getAttribute('data-filter');
                 
                 caseItems.forEach(item => {
                     if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
                         item.style.display = 'block';
-                        // 重新触发动画
                         setTimeout(() => {
                             item.querySelector('.animate-on-scroll').classList.remove('visible');
                             setTimeout(() => {
@@ -1014,24 +974,7 @@
             });
         });
         
-        // 页面加载完成后触发初始动画和导航高亮
-        window.addEventListener('load', function() {
-            // 初始导航高亮（首页）
-            highlightNavLink();
-            
-            // 触发初始可见元素的动画
-            const initialVisibleElements = document.querySelectorAll('.animate-on-scroll');
-            initialVisibleElements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 200;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    element.classList.add('visible');
-                }
-            });
-        });
-
-        // 修复可能的滚动行为兼容性问题（针对部分浏览器）
+        // 平滑滚动优化 - 确保跳转后导航栏仍固定
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1041,39 +984,38 @@
                 
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
-                    // 手动实现平滑滚动，确保兼容性
                     targetElement.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    
+                    // 跳转后强制保持导航栏固定
+                    setTimeout(() => {
+                        navbar.classList.add('fixed', 'top-0', 'left-0', 'right-0', 'z-1000');
+                    }, 100);
                 }
             });
         });
 
-        // 表单验证逻辑
+        // 表单验证
         const contactForm = document.getElementById('contactForm');
         const successToast = document.getElementById('successToast');
         
-        // 验证函数
         function validateForm() {
             let isValid = true;
             
-            // 获取表单值
             const name = document.getElementById('name').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const email = document.getElementById('email').value.trim();
             const subject = document.getElementById('subject').value;
             
-            // 重置错误状态
             resetErrorStates();
             
-            // 姓名验证（非空）
             if (name === '') {
                 showError('name', '请输入您的姓名');
                 isValid = false;
             }
             
-            // 电话验证（非空 + 格式）
             if (phone === '') {
                 showError('phone', '请输入您的电话');
                 isValid = false;
@@ -1082,7 +1024,6 @@
                 isValid = false;
             }
             
-            // 邮箱验证（非空 + 格式）
             if (email === '') {
                 showError('email', '请输入您的邮箱');
                 isValid = false;
@@ -1091,7 +1032,6 @@
                 isValid = false;
             }
             
-            // 咨询主题验证（非空）
             if (subject === '') {
                 showError('subject', '请选择咨询主题');
                 isValid = false;
@@ -1100,7 +1040,6 @@
             return isValid;
         }
         
-        // 显示错误信息
         function showError(fieldId, message) {
             const field = document.getElementById(fieldId);
             const errorElement = document.getElementById(`${fieldId}Error`);
@@ -1109,11 +1048,9 @@
             errorElement.textContent = message;
             errorElement.classList.remove('hidden');
             
-            // 错误输入框获得焦点
             field.focus();
         }
         
-        // 重置错误状态
         function resetErrorStates() {
             const fields = ['name', 'phone', 'email', 'subject'];
             
@@ -1127,28 +1064,22 @@
             });
         }
         
-        // 表单提交事件
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
             if (validateForm()) {
-                // 模拟表单提交（实际项目中替换为AJAX请求）
                 setTimeout(() => {
-                    // 显示成功提示
                     successToast.classList.add('show');
                     
-                    // 3秒后隐藏成功提示
                     setTimeout(() => {
                         successToast.classList.remove('show');
                     }, 3000);
                     
-                    // 重置表单
                     contactForm.reset();
                 }, 500);
             }
         });
         
-        // 输入框变化时清除对应错误
         const inputFields = contactForm.querySelectorAll('input, select');
         inputFields.forEach(field => {
             field.addEventListener('input', function() {
@@ -1163,7 +1094,7 @@
             });
         });
 
-        // 微信二维码显示/隐藏逻辑
+        // 微信二维码逻辑
         function initWechatQrcode() {
             const wechatElements = document.querySelectorAll('.wechat-icon-wrapper');
             
@@ -1171,70 +1102,54 @@
                 const icon = wrapper.querySelector('a');
                 const qrcode = wrapper.querySelector('.qrcode-container');
                 
-                // 点击图标显示/隐藏二维码
                 icon.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    // 关闭其他已显示的二维码
                     document.querySelectorAll('.qrcode-container.show').forEach(item => {
                         if (item !== qrcode) {
                             item.classList.remove('show');
-                            // 重置动画状态，以便下次重新触发
                             setTimeout(() => {
                                 item.style.animation = 'none';
                             }, 500);
                         }
                     });
                     
-                    // 切换当前二维码显示状态
                     if (qrcode.classList.contains('show')) {
                         qrcode.classList.remove('show');
-                        // 重置动画状态
                         setTimeout(() => {
                             qrcode.style.animation = 'none';
                         }, 500);
                     } else {
-                        // 强制重绘以重新触发动画
                         qrcode.style.animation = 'none';
-                        qrcode.offsetHeight; // 触发重绘
+                        qrcode.offsetHeight;
                         qrcode.classList.add('show');
                     }
                 });
                 
-                // 点击二维码区域不关闭
                 qrcode.addEventListener('click', function(e) {
                     e.stopPropagation();
                 });
             });
             
-            // 点击页面其他区域关闭二维码
             document.addEventListener('click', function() {
                 document.querySelectorAll('.qrcode-container.show').forEach(qrcode => {
                     qrcode.classList.remove('show');
-                    // 重置动画状态
                     setTimeout(() => {
                         qrcode.style.animation = 'none';
                     }, 500);
                 });
             });
             
-            // 滚动页面时关闭二维码
             window.addEventListener('scroll', function() {
                 document.querySelectorAll('.qrcode-container.show').forEach(qrcode => {
                     qrcode.classList.remove('show');
-                    // 重置动画状态
                     setTimeout(() => {
                         qrcode.style.animation = 'none';
                     }, 500);
                 });
             });
         }
-        
-        // 初始化微信二维码功能
-        document.addEventListener('DOMContentLoaded', function() {
-            initWechatQrcode();
-        });
     </script>
 </body>
 </html>
