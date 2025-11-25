@@ -20,7 +20,9 @@
                         secondary: '#1E293B', // 深灰蓝
                         dark: '#0F172A', // 近黑色
                         accent: '#22D3EE', // 青色点缀
-                        light: '#F8FAFC' // 浅灰色文本
+                        light: '#F8FAFC', // 浅灰色文本
+                        success: '#10B981', // 成功色
+                        error: '#EF4444' // 错误色
                     },
                     fontFamily: {
                         inter: ['Inter', 'system-ui', 'sans-serif'],
@@ -28,7 +30,10 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'fade-up': 'fadeUp 0.8s ease forwards',
-                        'fade-in': 'fadeIn 1s ease forwards'
+                        'fade-in': 'fadeIn 1s ease forwards',
+                        'scan': 'scan 2s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'tech-pop': 'techPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards'
                     },
                     keyframes: {
                         float: {
@@ -42,6 +47,31 @@
                         fadeIn: {
                             '0%': { opacity: '0' },
                             '100%': { opacity: '1' },
+                        },
+                        scan: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 10px rgba(14, 165, 233, 0.5), 0 0 20px rgba(14, 165, 233, 0.3)' },
+                            '50%': { boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.5), 0 0 60px rgba(14, 165, 233, 0.3)' },
+                        },
+                        techPop: {
+                            '0%': { 
+                                opacity: 0, 
+                                transform: 'translateX(-50%) scale(0.3) rotate(-5deg)',
+                                boxShadow: '0 0 0 rgba(14, 165, 233, 0)'
+                            },
+                            '70%': { 
+                                opacity: 1, 
+                                transform: 'translateX(-50%) scale(1.05) rotate(2deg)',
+                                boxShadow: '0 0 30px rgba(14, 165, 233, 0.8), 0 0 60px rgba(14, 165, 233, 0.5)'
+                            },
+                            '100%': { 
+                                opacity: 1, 
+                                transform: 'translateX(-50%) scale(1) rotate(0deg)',
+                                boxShadow: '0 0 20px rgba(14, 165, 233, 0.8), 0 0 40px rgba(14, 165, 233, 0.5)'
+                            }
                         }
                     }
                 },
@@ -82,6 +112,95 @@
                 height: 2px;
                 background-color: theme('colors.primary');
                 border-radius: 1px;
+            }
+            .input-error {
+                border-color: theme('colors.error') !important;
+            }
+            .error-text {
+                color: theme('colors.error');
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+            }
+            .success-toast {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: theme('colors.success');
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                z-index: 1000;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            .success-toast.show {
+                opacity: 1;
+                visibility: visible;
+                top: 30px;
+            }
+            .qrcode-container {
+                position: absolute;
+                background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95));
+                padding: 1.5rem;
+                border-radius: 1.25rem;
+                z-index: 100;
+                opacity: 0;
+                visibility: hidden;
+                border: 2px solid rgba(14, 165, 233, 0.8);
+                overflow: hidden;
+                transform-origin: center;
+            }
+            .qrcode-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.8), transparent);
+                animation: scan 2s ease-in-out infinite;
+            }
+            .qrcode-container::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 2px;
+                background: linear-gradient(180deg, transparent, rgba(14, 165, 233, 0.8), transparent);
+                animation: scan 2s ease-in-out infinite 1s;
+            }
+            .qrcode-container.show {
+                opacity: 1;
+                visibility: visible;
+                animation: techPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulseGlow 2s ease-in-out infinite;
+            }
+            .qrcode-title {
+                color: #22D3EE;
+                font-size: 1rem;
+                font-weight: 600;
+                text-align: center;
+                margin-top: 1rem;
+                text-shadow: 0 0 10px rgba(34, 211, 238, 0.7);
+                letter-spacing: 0.5px;
+            }
+            .qrcode-border {
+                position: relative;
+                padding: 0.5rem;
+                background: linear-gradient(45deg, #0EA5E9, #22D3EE, #0EA5E9);
+                border-radius: 1rem;
+                box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+            }
+            .wechat-icon-hover {
+                transition: all 0.3s ease;
+            }
+            .wechat-icon-hover:hover {
+                transform: scale(1.15) rotate(5deg);
+                box-shadow: 0 0 15px rgba(14, 165, 233, 0.7);
+                background: linear-gradient(45deg, #0EA5E9, #22D3EE);
             }
         }
     </style>
@@ -138,6 +257,50 @@
         .nav-link.no-highlight.nav-active {
             color: white !important; /* 保持按钮原有白色文字 */
             font-weight: 500 !important; /* 恢复默认字重 */
+        }
+        
+        /* 微信图标容器相对定位 */
+        .wechat-icon-wrapper {
+            position: relative;
+            cursor: pointer;
+            z-index: 101;
+        }
+        
+        /* 二维码角落装饰 */
+        .qrcode-corner {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #22D3EE;
+            z-index: 102;
+        }
+        .qrcode-corner.top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+            border-radius: 4px 0 0 0;
+        }
+        .qrcode-corner.top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+            border-radius: 0 4px 0 0;
+        }
+        .qrcode-corner.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+            border-radius: 0 0 0 4px;
+        }
+        .qrcode-corner.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+            border-radius: 0 0 4px 0;
         }
     </style>
 </head>
@@ -245,7 +408,6 @@
                     
                     <!-- 右侧内容 -->
                     <div class="lg:w-1/2 animate-on-scroll">
-                        <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">关于我们</span>
                         <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                             以<span class="text-primary">技术创新</span>驱动，<br>
                             打造机器人领域领军品牌
@@ -266,7 +428,6 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- 标题栏 -->
                 <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
-                    <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">核心产品</span>
                     <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                         多元化<span class="text-primary">机器人产品矩阵</span>
                     </h2>
@@ -365,13 +526,11 @@
                 </div>
             </div>
         </section>
-
         <!-- 案例展示 - cases模块 -->
         <section id="cases" class="py-20 bg-dark">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <!-- 标题栏 -->
                 <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
-                    <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">成功案例</span>
                     <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                         赋能<span class="text-primary">各行业</span>客户价值提升
                     </h2>
@@ -379,7 +538,6 @@
                         已为汽车、电子、物流、医疗等多个行业的知名企业提供智能机器人解决方案，获得客户高度认可
                     </p>
                 </div>
-                
                 <!-- 案例筛选 -->
                 <div class="flex flex-wrap justify-center gap-4 mb-12 animate-on-scroll">
                     <button class="case-filter px-5 py-2 rounded-full bg-primary text-white text-sm font-medium" data-filter="all">全部案例</button>
@@ -474,7 +632,6 @@
         <section id="contact" class="py-20 bg-secondary">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-16 animate-on-scroll">
-                    <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">联系我们</span>
                     <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold mb-6">
                         携手<span class="text-primary">合作</span>，共创未来
                     </h2>
@@ -513,7 +670,7 @@
                                     </div>
                                     <div>
                                         <h4 class="text-white font-semibold mb-2">电子邮箱</h4>
-                                        <p class="text-gray-300">contact@future-robot.com</p>
+                                        <p class="text-gray-300">noname@snzljcloud.cn</p>
                                     </div>
                                 </li>
                                 <li class="flex items-start gap-4">
@@ -531,15 +688,26 @@
                             <div class="mt-10">
                                 <h4 class="text-white font-semibold mb-4">关注我们</h4>
                                 <div class="flex gap-4">
-                                    <a href="#" class="w-10 h-10 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors">
-                                        <i class="fa fa-weixin text-lg"></i>
-                                    </a>
-                                    <a href="#" class="w-10 h-10 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors">
-                                        <i class="fa fa-weibo text-lg"></i>
-                                    </a>
-                                    <a href="#" class="w-10 h-10 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors">
-                                        <i class="fa fa-linkedin text-lg"></i>
-                                    </a>
+                                    <!-- 联系我们模块的微信图标 - 现在也在上方显示 -->
+                                    <div class="wechat-icon-wrapper" id="wechatContact">
+                                        <a href="javascript:;" class="w-14 h-14 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors wechat-icon-hover">
+                                            <i class="fa fa-weixin text-2xl"></i>
+                                        </a>
+                                        <!-- 二维码容器 - 上方显示（修改重点） -->
+                                        <div class="qrcode-container" style="bottom: 100%; left: 50%; margin-bottom: 1rem; width: 280px;">
+                                            <div class="qrcode-border relative">
+                                                <!-- 角落装饰 -->
+                                                <div class="qrcode-corner top-left"></div>
+                                                <div class="qrcode-corner top-right"></div>
+                                                <div class="qrcode-corner bottom-left"></div>
+                                                <div class="qrcode-corner bottom-right"></div>
+                                                
+                                                <!-- 二维码图片 - 增大尺寸 -->
+                                                <img src="./images/weixin.png" alt="微信二维码" class="w-64 h-64 object-contain">
+                                            </div>
+                                            <div class="qrcode-title mt-2">扫码添加微信咨询</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -549,20 +717,23 @@
                     <div class="animate-on-scroll">
                         <div class="bg-dark/50 rounded-xl p-8 shadow-lg">
                             <h3 class="text-2xl font-bold mb-8">发送咨询</h3>
-                            <form>
+                            <form id="contactForm">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                                     <div>
                                         <label for="name" class="block text-gray-300 mb-2 text-sm">姓名</label>
                                         <input type="text" id="name" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的姓名">
+                                        <div id="nameError" class="error-text hidden"></div>
                                     </div>
                                     <div>
                                         <label for="phone" class="block text-gray-300 mb-2 text-sm">电话</label>
                                         <input type="tel" id="phone" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的电话">
+                                        <div id="phoneError" class="error-text hidden"></div>
                                     </div>
                                 </div>
                                 <div class="mb-6">
                                     <label for="email" class="block text-gray-300 mb-2 text-sm">邮箱</label>
                                     <input type="email" id="email" class="w-full bg-secondary/50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的邮箱">
+                                    <div id="emailError" class="error-text hidden"></div>
                                 </div>
                                 <div class="mb-6">
                                     <label for="subject" class="block text-gray-300 mb-2 text-sm">咨询主题</label>
@@ -574,6 +745,7 @@
                                         <option value="cooperation">合作洽谈</option>
                                         <option value="other">其他问题</option>
                                     </select>
+                                    <div id="subjectError" class="error-text hidden"></div>
                                 </div>
                                 <div class="mb-8">
                                     <label for="message" class="block text-gray-300 mb-2 text-sm">留言内容</label>
@@ -590,6 +762,11 @@
         </section>
     </main>
 
+    <!-- 提交成功提示框 -->
+    <div id="successToast" class="success-toast">
+        <i class="fa fa-check-circle mr-2"></i> 咨询提交成功！我们将尽快与您联系
+    </div>
+
     <!-- 页脚 -->
     <footer class="bg-dark py-12 border-t border-white/5">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -597,24 +774,39 @@
                 <!-- 公司信息 -->
                 <div>
                     <a href="#home" class="flex items-center space-x-2 mb-6">
-                        <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                            <i class="fa fa-robot text-white text-xl"></i>
-                        </div>
-                        <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">森诺智联</span>
+                    <div class="w-10 h-10">
+                        <img src="./images/logo.png" alt="森诺智联Logo" class="w-full h-full object-contain">
+                    </div>
+                    <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">森诺智联+</span>
                     </a>
                     <p class="text-gray-300 text-sm mb-6 leading-relaxed">
                         专注智能机器人研发与应用，为全球客户提供高品质的自动化解决方案，推动产业智能化升级
                     </p>
                     <div class="flex gap-4">
-                        <a href="#" class="w-8 h-8 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-sm">
-                            <i class="fa fa-weixin"></i>
-                        </a>
-                        <a href="#" class="w-8 h-8 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-sm">
+                        <!-- 页脚的微信图标 - 保持上方显示 -->
+                        <div class="wechat-icon-wrapper" id="wechatFooter">
+                            <a href="javascript:;" class="w-12 h-12 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-lg wechat-icon-hover">
+                                <i class="fa fa-weixin"></i>
+                            </a>
+                            <!-- 二维码容器 - 上方显示 -->
+                            <div class="qrcode-container" style="bottom: 100%; left: 50%; margin-bottom: 1rem; width: 260px;">
+                                <div class="qrcode-border relative">
+                                    <!-- 角落装饰 -->
+                                    <div class="qrcode-corner top-left"></div>
+                                    <div class="qrcode-corner top-right"></div>
+                                    <div class="qrcode-corner bottom-left"></div>
+                                    <div class="qrcode-corner bottom-right"></div>
+                                    
+                                    <!-- 二维码图片 - 增大尺寸 -->
+                                    <img src="./images/weixin.png" alt="微信二维码" class="w-60 h-60 object-contain">
+                                </div>
+                                <div class="qrcode-title mt-2">扫码关注公众号</div>
+                            </div>
+                        </div>
+                        <!-- <a href="#" class="w-12 h-12 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-lg wechat-icon-hover">
                             <i class="fa fa-weibo"></i>
-                        </a>
-                        <a href="#" class="w-8 h-8 bg-white/5 hover:bg-primary rounded-full flex items-center justify-center text-white transition-colors text-sm">
-                            <i class="fa fa-linkedin"></i>
-                        </a>
+                        </a>  -->
+                       
                     </div>
                 </div>
                 
@@ -623,9 +815,9 @@
                     <h4 class="text-white font-bold text-lg mb-6">快速链接</h4>
                     <ul class="space-y-4">
                         <li><a href="#home" class="text-gray-300 hover:text-primary transition-colors text-sm">首页</a></li>
-                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">产品中心</a></li>
-                        <li><a href="#cases" class="text-gray-300 hover:text-primary transition-colors text-sm">案例展示</a></li>
                         <li><a href="#about" class="text-gray-300 hover:text-primary transition-colors text-sm">关于我们</a></li>
+                        <li><a href="#products" class="text-gray-300 hover:text-primary transition-colors text-sm">产品中心</a></li>
+                        <li><a href="#cases" class="text-gray-300 hover:text-primary transition-colors text-sm">案例展示</a></li>                   
                         <li><a href="#contact" class="text-gray-300 hover:text-primary transition-colors text-sm">联系我们</a></li>
                     </ul>
                 </div>
@@ -656,7 +848,7 @@
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="fa fa-envelope text-primary mt-1"></i>
-                            <span class="text-gray-300 text-sm">contact@future-robot.com</span>
+                            <span class="text-gray-300 text-sm">noname@snzljcloud.cn</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="fa fa-clock-o text-primary mt-1"></i>
@@ -856,6 +1048,192 @@
                     });
                 }
             });
+        });
+
+        // 表单验证逻辑
+        const contactForm = document.getElementById('contactForm');
+        const successToast = document.getElementById('successToast');
+        
+        // 验证函数
+        function validateForm() {
+            let isValid = true;
+            
+            // 获取表单值
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value;
+            
+            // 重置错误状态
+            resetErrorStates();
+            
+            // 姓名验证（非空）
+            if (name === '') {
+                showError('name', '请输入您的姓名');
+                isValid = false;
+            }
+            
+            // 电话验证（非空 + 格式）
+            if (phone === '') {
+                showError('phone', '请输入您的电话');
+                isValid = false;
+            } else if (!/^1[3-9]\d{9}$/.test(phone)) {
+                showError('phone', '请输入有效的手机号码');
+                isValid = false;
+            }
+            
+            // 邮箱验证（非空 + 格式）
+            if (email === '') {
+                showError('email', '请输入您的邮箱');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('email', '请输入有效的邮箱地址');
+                isValid = false;
+            }
+            
+            // 咨询主题验证（非空）
+            if (subject === '') {
+                showError('subject', '请选择咨询主题');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // 显示错误信息
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`${fieldId}Error`);
+            
+            field.classList.add('input-error');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+            
+            // 错误输入框获得焦点
+            field.focus();
+        }
+        
+        // 重置错误状态
+        function resetErrorStates() {
+            const fields = ['name', 'phone', 'email', 'subject'];
+            
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const errorElement = document.getElementById(`${fieldId}Error`);
+                
+                field.classList.remove('input-error');
+                errorElement.classList.add('hidden');
+                errorElement.textContent = '';
+            });
+        }
+        
+        // 表单提交事件
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                // 模拟表单提交（实际项目中替换为AJAX请求）
+                setTimeout(() => {
+                    // 显示成功提示
+                    successToast.classList.add('show');
+                    
+                    // 3秒后隐藏成功提示
+                    setTimeout(() => {
+                        successToast.classList.remove('show');
+                    }, 3000);
+                    
+                    // 重置表单
+                    contactForm.reset();
+                }, 500);
+            }
+        });
+        
+        // 输入框变化时清除对应错误
+        const inputFields = contactForm.querySelectorAll('input, select');
+        inputFields.forEach(field => {
+            field.addEventListener('input', function() {
+                const fieldId = this.id;
+                const errorElement = document.getElementById(`${fieldId}Error`);
+                
+                if (this.classList.contains('input-error')) {
+                    this.classList.remove('input-error');
+                    errorElement.classList.add('hidden');
+                    errorElement.textContent = '';
+                }
+            });
+        });
+
+        // 微信二维码显示/隐藏逻辑
+        function initWechatQrcode() {
+            const wechatElements = document.querySelectorAll('.wechat-icon-wrapper');
+            
+            wechatElements.forEach(wrapper => {
+                const icon = wrapper.querySelector('a');
+                const qrcode = wrapper.querySelector('.qrcode-container');
+                
+                // 点击图标显示/隐藏二维码
+                icon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // 关闭其他已显示的二维码
+                    document.querySelectorAll('.qrcode-container.show').forEach(item => {
+                        if (item !== qrcode) {
+                            item.classList.remove('show');
+                            // 重置动画状态，以便下次重新触发
+                            setTimeout(() => {
+                                item.style.animation = 'none';
+                            }, 500);
+                        }
+                    });
+                    
+                    // 切换当前二维码显示状态
+                    if (qrcode.classList.contains('show')) {
+                        qrcode.classList.remove('show');
+                        // 重置动画状态
+                        setTimeout(() => {
+                            qrcode.style.animation = 'none';
+                        }, 500);
+                    } else {
+                        // 强制重绘以重新触发动画
+                        qrcode.style.animation = 'none';
+                        qrcode.offsetHeight; // 触发重绘
+                        qrcode.classList.add('show');
+                    }
+                });
+                
+                // 点击二维码区域不关闭
+                qrcode.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+            
+            // 点击页面其他区域关闭二维码
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.qrcode-container.show').forEach(qrcode => {
+                    qrcode.classList.remove('show');
+                    // 重置动画状态
+                    setTimeout(() => {
+                        qrcode.style.animation = 'none';
+                    }, 500);
+                });
+            });
+            
+            // 滚动页面时关闭二维码
+            window.addEventListener('scroll', function() {
+                document.querySelectorAll('.qrcode-container.show').forEach(qrcode => {
+                    qrcode.classList.remove('show');
+                    // 重置动画状态
+                    setTimeout(() => {
+                        qrcode.style.animation = 'none';
+                    }, 500);
+                });
+            });
+        }
+        
+        // 初始化微信二维码功能
+        document.addEventListener('DOMContentLoaded', function() {
+            initWechatQrcode();
         });
     </script>
 </body>
